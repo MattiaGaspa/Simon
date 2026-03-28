@@ -1,4 +1,4 @@
-package com.example.simon
+package com.github.mattiagaspa.simon
 
 import org.junit.Test
 
