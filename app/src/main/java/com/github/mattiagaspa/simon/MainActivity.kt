@@ -5,18 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import com.github.mattiagaspa.simon.components.Keypad
-import com.github.mattiagaspa.simon.components.Submit
+import com.github.mattiagaspa.simon.components.*
 import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,58 +22,54 @@ class MainActivity : ComponentActivity() {
             SimonTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val configuration = LocalConfiguration.current
-                    var sequence by rememberSaveable { mutableStateOf("") }
-                    var allSequences by rememberSaveable { mutableStateOf("") }
-
+                    val stateHolder = rememberSaveable(saver = StateHolder.Saver) {
+                        StateHolder()
+                    }
                     when(configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
-                            Column(
+                            MainActivityPortrait(
                                 modifier = Modifier.padding(innerPadding),
-                            ) {
-                                Keypad(
-                                    onSequenceChange = { newColor ->
-                                        val adding = newColor[0].toString()
-                                        sequence = if (sequence.isEmpty()) adding else "$sequence, $adding"
-                                    },
-                                )
-                                Submit(
-                                    sequence = sequence,
-                                    allSequences = allSequences,
-                                    onSequenceUpdate = {
-                                        allSequences = "$allSequences\n$sequence"
-                                    },
-                                    onSequenceDelete = {
-                                        sequence = ""
-                                    }
-                                )
-                            }
+                                stateHolder = stateHolder
+                            )
                         }
 
                         Configuration.ORIENTATION_LANDSCAPE -> {
-                            Column(
+                            MainActivityLandscape(
                                 modifier = Modifier.padding(innerPadding),
-                            ) {
-                                Keypad(
-                                    onSequenceChange = { newColor ->
-                                        val adding = newColor[0].toString()
-                                        sequence = if (sequence.isEmpty()) adding else "$sequence, $adding"
-                                    },
-                                )
-                                Submit(
-                                    sequence = sequence,
-                                    allSequences = allSequences,
-                                    onSequenceUpdate = {
-                                        allSequences = "$allSequences\n$sequence"
-                                    },
-                                    onSequenceDelete = {
-                                        sequence = ""
-                                    }
-                                )
-                            }
+                                stateHolder = stateHolder
+                            )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun MainActivityPortrait(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+    Column(
+        modifier = modifier,
+    ) {
+        Keypad(
+            stateHolder = stateHolder
+        )
+        Submit(
+            stateHolder = stateHolder
+        )
+    }
+}
+
+@Composable
+fun MainActivityLandscape(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+    Column(
+        modifier = modifier,
+    ) {
+        Keypad(
+            stateHolder = stateHolder
+        )
+        Submit(
+            stateHolder = stateHolder
+        )
     }
 }
