@@ -18,13 +18,13 @@ import com.github.mattiagaspa.simon.HistoryActivity
 import com.github.mattiagaspa.simon.R
 
 @Composable
-fun Submit(modifier: Modifier = Modifier, sequence: MutableList<String>) {
+fun Submit(modifier: Modifier = Modifier, sequence: String, allSequences: String, onSequenceUpdate: () -> Unit, onSequenceDelete: () -> Unit) {
     Column (
         modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
-            value = sequence.joinToString(", "), // Fix by turning it to a state
+            value = sequence,
             onValueChange = {},
             modifier = Modifier.align(Alignment.CenterHorizontally),
             enabled = true,
@@ -35,7 +35,9 @@ fun Submit(modifier: Modifier = Modifier, sequence: MutableList<String>) {
             modifier = Modifier.padding(4.dp)
         ) {
             Button(
-                onClick = { sequence.clear() },
+                onClick = {
+                    onSequenceDelete()
+                },
                 modifier = Modifier
                     .padding(horizontal = 5.dp)
                     .weight(1f)
@@ -46,8 +48,18 @@ fun Submit(modifier: Modifier = Modifier, sequence: MutableList<String>) {
             val context = LocalContext.current
             Button(
                 onClick = {
-                    val intent = Intent(context, HistoryActivity::class.java)
-                    context.startActivity(intent)
+                    if (sequence.isNotEmpty()) {
+                        val updatedAllSequences = if (allSequences.isEmpty()) {
+                            sequence
+                        } else {
+                            "$allSequences\n$sequence"
+                        }
+                        onSequenceUpdate()
+                        val intent = Intent(context, HistoryActivity::class.java)
+                        intent.putExtra("allSequences", updatedAllSequences)
+                        context.startActivity(intent)
+                        onSequenceDelete()
+                    }
                 },
                 modifier = Modifier
                     .padding(horizontal = 5.dp)

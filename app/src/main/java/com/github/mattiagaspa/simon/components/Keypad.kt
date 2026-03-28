@@ -17,7 +17,7 @@ import com.github.mattiagaspa.simon.R
 import com.github.mattiagaspa.simon.ui.theme.*
 
 @Composable
-fun Keypad(modifier: Modifier = Modifier, sequence: MutableList<String>) {
+fun Keypad(modifier: Modifier = Modifier, onSequenceChange: (String) -> Unit) {
     val colorDisposition = arrayOf(
         arrayOf(Red, Green, Blue),
         arrayOf(Cyan, Magenta, Yellow)
@@ -33,16 +33,14 @@ fun Keypad(modifier: Modifier = Modifier, sequence: MutableList<String>) {
                 for (color in row) {
                     val colorName = colorName(color)
                     Button(
-                        onClick = {
-                            sequence += colorName[0].toString()
-                        },
+                        onClick = { onSequenceChange(colorName) },
                         modifier = Modifier.weight(1f).padding(horizontal = 4.dp),
                         shape = RectangleShape,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = color
                         )
                     ) {
-                        Text(colorName(color))
+                        // Text(colorName)
                     }
                 }
             }
@@ -53,12 +51,12 @@ fun Keypad(modifier: Modifier = Modifier, sequence: MutableList<String>) {
 @Composable
 fun colorName(color: Color): String {
     return when(color) {
-        Red -> stringResource(R.string.red)
-        Green -> stringResource(R.string.green)
-        Blue -> stringResource(R.string.blue)
-        Cyan -> stringResource(R.string.cyan)
-        Magenta -> stringResource(R.string.magenta)
-        Yellow -> stringResource(R.string.yellow)
-        else -> stringResource(R.string.unknown_color)
+        Red -> "Red" // stringResource(R.string.red)
+        Green -> "Green" // stringResource(R.string.green)
+        Blue -> "Blue" // stringResource(R.string.blue)
+        Cyan -> "Cyan" // stringResource(R.string.cyan)
+        Magenta -> "Magenta" // stringResource(R.string.magenta)
+        Yellow -> "Yellow" // stringResource(R.string.yellow)
+        else -> "Unknown color"// stringResource(R.string.unknown_color)
     }
 }

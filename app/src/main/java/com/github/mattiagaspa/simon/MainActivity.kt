@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,45 +27,58 @@ class MainActivity : ComponentActivity() {
             SimonTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val configuration = LocalConfiguration.current
-                    val sequence by rememberSaveable { mutableStateOf(mutableListOf<String>()) }
+                    var sequence by rememberSaveable { mutableStateOf("") }
+                    var allSequences by rememberSaveable { mutableStateOf("") }
 
                     when(configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
-                            MainActivityPortrait(
+                            Column(
                                 modifier = Modifier.padding(innerPadding),
-                                sequence = sequence
-                            )
+                            ) {
+                                Keypad(
+                                    onSequenceChange = { newColor ->
+                                        val adding = newColor[0].toString()
+                                        sequence = if (sequence.isEmpty()) adding else "$sequence, $adding"
+                                    },
+                                )
+                                Submit(
+                                    sequence = sequence,
+                                    allSequences = allSequences,
+                                    onSequenceUpdate = {
+                                        allSequences = "$allSequences\n$sequence"
+                                    },
+                                    onSequenceDelete = {
+                                        sequence = ""
+                                    }
+                                )
+                            }
                         }
 
                         Configuration.ORIENTATION_LANDSCAPE -> {
-                            MainActivityLandscape(
+                            Column(
                                 modifier = Modifier.padding(innerPadding),
-                                sequence = sequence
-                            )
+                            ) {
+                                Keypad(
+                                    onSequenceChange = { newColor ->
+                                        val adding = newColor[0].toString()
+                                        sequence = if (sequence.isEmpty()) adding else "$sequence, $adding"
+                                    },
+                                )
+                                Submit(
+                                    sequence = sequence,
+                                    allSequences = allSequences,
+                                    onSequenceUpdate = {
+                                        allSequences = "$allSequences\n$sequence"
+                                    },
+                                    onSequenceDelete = {
+                                        sequence = ""
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun MainActivityPortrait(modifier: Modifier = Modifier, sequence: MutableList<String>) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Keypad(
-            sequence = sequence
-        )
-        Submit(
-            sequence = sequence
-        )
-    }
-}
-
-@Composable
-fun MainActivityLandscape(modifier: Modifier = Modifier, sequence: MutableList<String>) {
-    Text(sequence.joinToString(", "), modifier = modifier.fillMaxWidth())
-
 }
