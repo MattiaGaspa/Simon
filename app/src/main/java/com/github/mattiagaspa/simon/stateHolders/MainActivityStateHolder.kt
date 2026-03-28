@@ -1,11 +1,13 @@
-package com.github.mattiagaspa.simon
+package com.github.mattiagaspa.simon.stateHolders
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.graphics.Color
 import com.github.mattiagaspa.simon.ui.theme.*
 
-class StateHolder(sequence: String = "", allSequences: String = "") {
+class MainActivityStateHolder(sequence: String = "", allSequences: String = "") {
     var sequence by mutableStateOf(sequence)
         private set
     var allSequences by mutableStateOf(allSequences)
@@ -31,16 +33,17 @@ class StateHolder(sequence: String = "", allSequences: String = "") {
     }
 
     fun updateAllSequences() {
-        if (sequence.isNotEmpty()) {
-            allSequences += "\n$sequence"
+        if (allSequences.isNotEmpty()) {
+            allSequences += "\n"
         }
+        allSequences += sequence
     }
 
     companion object {
-        val Saver: Saver<StateHolder, *> = listSaver(
+        val Saver: Saver<MainActivityStateHolder, *> = listSaver(
             save = { listOf(it.sequence, it.allSequences) },
             restore = {
-                StateHolder(
+                MainActivityStateHolder(
                     sequence = it[0],
                     allSequences = it[1]
                 )

@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import com.github.mattiagaspa.simon.StateHolder
+import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 import com.github.mattiagaspa.simon.ui.theme.*
 
 @Composable
-fun Keypad(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+fun Keypad(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     val colorDisposition = arrayOf(
         arrayOf(Red, Green, Blue),
         arrayOf(Cyan, Magenta, Yellow)
@@ -21,7 +21,7 @@ fun Keypad(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
     ) {
         for (row in colorDisposition) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp)
+                modifier = Modifier.padding(horizontal = 2.dp)
             ) {
                 for (color in row) {
                     Button(

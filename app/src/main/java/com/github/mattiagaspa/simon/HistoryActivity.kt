@@ -6,10 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import com.github.mattiagaspa.simon.stateHolders.HistoryActivityStateHolder
 import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
 class HistoryActivity : ComponentActivity() {
@@ -24,19 +29,22 @@ class HistoryActivity : ComponentActivity() {
 
                     val intent = getIntent()
                     val allSequences = intent.getStringExtra("allSequences") ?: ""
+                    val stateHolder = rememberSaveable(saver = HistoryActivityStateHolder.Saver) {
+                        HistoryActivityStateHolder(allSequences)
+                    }
 
                     when(configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
                             HistoryActivityPortrait(
                                 modifier = Modifier.padding(innerPadding),
-                                sequence = allSequences,
+                                stateHolder = stateHolder
                             )
                         }
 
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             HistoryActivityLandscape(
                                 modifier = Modifier.padding(innerPadding),
-                                sequence = allSequences,
+                                stateHolder = stateHolder
                             )
                         }
                     }
@@ -47,17 +55,45 @@ class HistoryActivity : ComponentActivity() {
 }
 
 @Composable
-fun HistoryActivityPortrait(modifier: Modifier = Modifier, sequence: String) {
-    Text(
-        text = sequence,
-        modifier = modifier
-    )
+fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
+    Column(
+        modifier = modifier.padding(2.dp).verticalScroll(rememberScrollState())
+    ) {
+        for (row in stateHolder.getList()) {
+            Row(
+                modifier = Modifier.padding(2.dp)
+            ) {
+                Text(
+                    text = row[0].toString(),
+                    modifier = Modifier.weight(0.1f)
+                )
+                Text(
+                    text = row[1].toString(),
+                    modifier = Modifier.weight(0.9f)
+                )
+            }
+        }
+    }
 }
 
 @Composable
-fun HistoryActivityLandscape(modifier: Modifier = Modifier, sequence: String) {
-    Text(
-        text = sequence,
-        modifier = modifier
-    )
+fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
+    Column(
+        modifier = modifier.padding(2.dp).verticalScroll(rememberScrollState())
+    ) {
+        for (row in stateHolder.getList()) {
+            Row(
+                modifier = Modifier.padding(2.dp)
+            ) {
+                Text(
+                    text = row[0].toString(),
+                    modifier = Modifier.weight(0.1f)
+                )
+                Text(
+                    text = row[1].toString(),
+                    modifier = Modifier.weight(0.9f)
+                )
+            }
+        }
+    }
 }
