@@ -7,4 +7,6 @@
     <string name="magenta">Magenta</string>
     <string name="yellow">Yellow</string>
     <string name="unknown_color">Unknown color</string>
+    <string name="cancel">Cancel</string>
+    <string name="end">End game</string>
 </resources>

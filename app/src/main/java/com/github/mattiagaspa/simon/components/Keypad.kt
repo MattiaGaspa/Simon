@@ -17,7 +17,7 @@ import com.github.mattiagaspa.simon.R
 import com.github.mattiagaspa.simon.ui.theme.*
 
 @Composable
-fun Keypad(modifier: Modifier = Modifier) {
+fun Keypad(modifier: Modifier = Modifier, sequence: MutableList<String>) {
     val colorDisposition = arrayOf(
         arrayOf(Red, Green, Blue),
         arrayOf(Cyan, Magenta, Yellow)
@@ -31,8 +31,11 @@ fun Keypad(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp)
             ) {
                 for (color in row) {
+                    val colorName = colorName(color)
                     Button(
-                        onClick = {}, // Add logic
+                        onClick = {
+                            sequence += colorName[0].toString()
+                        },
                         modifier = Modifier.weight(1f).padding(horizontal = 4.dp),
                         shape = RectangleShape,
                         colors = ButtonDefaults.buttonColors(
