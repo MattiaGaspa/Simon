@@ -6,13 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import com.github.mattiagaspa.simon.components.*
 import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
@@ -26,9 +24,11 @@ class MainActivity : ComponentActivity() {
             SimonTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val configuration = LocalConfiguration.current
+                    // Initialize the object that holds all the states for the current activity
                     val stateHolder = rememberSaveable(saver = MainActivityStateHolder.Saver) {
                         MainActivityStateHolder()
                     }
+                    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
                     when(configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
                             MainActivityPortrait(
@@ -50,17 +50,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Composable to define the layout for portrait screens.
 @Composable
 fun MainActivityPortrait(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
+        modifier = modifier
     ) {
         Keypad(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally).weight(0.9f),
             stateHolder = stateHolder
         )
         SequenceVisualizer(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally).weight(0.2f),
             stateHolder = stateHolder
         )
         Submit(
@@ -70,24 +71,25 @@ fun MainActivityPortrait(modifier: Modifier = Modifier, stateHolder: MainActivit
     }
 }
 
+// Composable to define the layout for landscape screens.
 @Composable
 fun MainActivityLandscape(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
+    // Split screen in half: one half for keypad and the other half for the sequence and the buttons
     Row(
         modifier = modifier
     ) {
         Keypad(
-            modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
+            modifier = Modifier.weight(1f),
             stateHolder = stateHolder
         )
         Column(
-            modifier = Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).align(Alignment.CenterVertically)
+            modifier = Modifier.fillMaxHeight().weight(1f)
         ) {
             SequenceVisualizer(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally),
                 stateHolder = stateHolder
             )
             Submit(
-                modifier = Modifier.weight(1f),
                 stateHolder = stateHolder
             )
         }

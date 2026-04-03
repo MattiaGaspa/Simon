@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="red">Rosso</string>
-    <string name="green">Verde</string>
-    <string name="blue">Blu</string>
-    <string name="cyan">Ciano</string>
-    <string name="magenta">Magenta</string>
-    <string name="yellow">Giallo</string>
-    <string name="unknown_color">Colore non conosciuto</string>
     <string name="cancel">Cancella</string>
     <string name="end">Fine partita</string>
+    <string name="sequence">Sequenza</string>
 </resources>

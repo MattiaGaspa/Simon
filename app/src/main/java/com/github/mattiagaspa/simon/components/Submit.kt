@@ -12,6 +12,10 @@ import com.github.mattiagaspa.simon.HistoryActivity
 import com.github.mattiagaspa.simon.R
 import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 
+// Composable function to define the two buttons: the one to cancel the sequence and the one to end the game
+// Takes a MainActivityStateHolder object to:
+// - cancel the current sequence, with the .clearSequence() method, when `cancel` is pressed
+// - updates the string that holds all the sequences from the app launh, with the .updateAllSequences() method, and cancels the current sequence when `end game` is pressed
 @Composable
 fun Submit(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     Row(
@@ -26,12 +30,15 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder =
             Text(stringResource(R.string.cancel))
         }
 
+        // The Intent() first argument is the context in which the intent is created.
+        // Since this composable function is defined outside MainActivity, we retrieve the context with LocalContext.current
         val context = LocalContext.current
         Button(
             onClick = {
                 stateHolder.updateAllSequences()
                 stateHolder.clearSequence()
                 val intent = Intent(context, HistoryActivity::class.java)
+                // Pass all the sequences in the intent
                 intent.putExtra("allSequences", stateHolder.allSequences)
                 context.startActivity(intent)
             },

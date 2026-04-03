@@ -27,12 +27,15 @@ class HistoryActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val configuration = LocalConfiguration.current
 
+                    // Retrieve all the sequences
                     val intent = getIntent()
                     val allSequences = intent.getStringExtra("allSequences") ?: ""
+                    // Initialize the object to hold the activity states with the sequences just received
                     val stateHolder = rememberSaveable(saver = HistoryActivityStateHolder.Saver) {
                         HistoryActivityStateHolder(allSequences)
                     }
 
+                    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
                     when(configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
                             HistoryActivityPortrait(
@@ -54,6 +57,7 @@ class HistoryActivity : ComponentActivity() {
     }
 }
 
+// Composable to define the layout for portrait screens.
 @Composable
 fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
     Column(
@@ -76,6 +80,7 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryA
     }
 }
 
+// Composable to define the layout for landscape screens.
 @Composable
 fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
     Column(
@@ -83,7 +88,7 @@ fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: History
     ) {
         for (row in stateHolder.getList()) {
             Row(
-                modifier = Modifier.padding(2.dp)
+                modifier = Modifier.padding(1.dp)
             ) {
                 Text(
                     text = row[0].toString(),
