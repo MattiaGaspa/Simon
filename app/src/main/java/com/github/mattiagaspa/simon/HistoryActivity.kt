@@ -6,14 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.dp
+import com.github.mattiagaspa.simon.components.SequenceList
 import com.github.mattiagaspa.simon.stateHolders.HistoryActivityStateHolder
 import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
@@ -30,7 +28,7 @@ class HistoryActivity : ComponentActivity() {
                     // Retrieve all the sequences
                     val intent = getIntent()
                     val allSequences = intent.getStringExtra("allSequences") ?: ""
-                    // Initialize the object to hold the activity states with the sequences just received
+                    // Initialize the object to hold the activity states with the sequences just received.
                     val stateHolder = rememberSaveable(saver = HistoryActivityStateHolder.Saver) {
                         HistoryActivityStateHolder(allSequences)
                     }
@@ -60,45 +58,17 @@ class HistoryActivity : ComponentActivity() {
 // Composable to define the layout for portrait screens.
 @Composable
 fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
-    Column(
-        modifier = modifier.padding(2.dp).verticalScroll(rememberScrollState())
-    ) {
-        for (row in stateHolder.getList()) {
-            Row(
-                modifier = Modifier.padding(2.dp)
-            ) {
-                Text(
-                    text = row[0].toString(),
-                    modifier = Modifier.weight(0.1f)
-                )
-                Text(
-                    text = row[1].toString(),
-                    modifier = Modifier.weight(0.9f)
-                )
-            }
-        }
-    }
+    SequenceList(
+        modifier,
+        stateHolder
+    )
 }
 
 // Composable to define the layout for landscape screens.
 @Composable
 fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
-    Column(
-        modifier = modifier.padding(2.dp).verticalScroll(rememberScrollState())
-    ) {
-        for (row in stateHolder.getList()) {
-            Row(
-                modifier = Modifier.padding(1.dp)
-            ) {
-                Text(
-                    text = row[0].toString(),
-                    modifier = Modifier.weight(0.1f)
-                )
-                Text(
-                    text = row[1].toString(),
-                    modifier = Modifier.weight(0.9f)
-                )
-            }
-        }
-    }
+    SequenceList(
+        modifier,
+        stateHolder
+    )
 }

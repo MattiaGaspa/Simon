@@ -14,8 +14,8 @@ import com.github.mattiagaspa.simon.ui.theme.*
 // - addColor: to add a color to the current sequence (when a button is pressed)
 // - clearSequence: to clear the sequence (when the `cancel` or `end game` button is pressed)
 // - updateAllSequences: to add the current sequence at the end of all sequences (used when the `end game` button is pressed)
-// Two rememberSaveable mutableStateOf string were enough, but I didn't like to pass many () -> Unit function in preparation for the second delivery.
-// Now the control of the states is centralized for every component in the MainActivity activity.
+// Two rememberSaveable mutableStateOf string would have been enough, but I preferred not to pass many () -> Unit functions.
+// State control is now centralized for every component in the MainActivity activity.
 class MainActivityStateHolder(sequence: String = "", allSequences: String = "") {
     var sequence by mutableStateOf(sequence)
         private set

@@ -7,7 +7,9 @@ import androidx.compose.runtime.saveable.*
 // - allSequences: String: to hold all the sequences pressed from the app launch.
 // Contains the helper methods:
 // - getList: to get a list of arrays that contains two elements: the number of button pressed and the sequence
-// Unnecessary since it only contains a String and a single method. Decided to implement anyway to make it easier to make future changes to the activity
+// This class is not necessary for the project. Since there is no way to modify the `allSequence` string in the HistoryActivity,
+// a string would have been enough. I preferred to wrap the string in a state holder class anyway to maintain the similarity
+// with MainActivity and to be able to define helper methods
 class HistoryActivityStateHolder(allSequences: String = "") {
     var allSequences by mutableStateOf(allSequences)
         private set
