@@ -1,5 +1,6 @@
 package com.github.mattiagaspa.simon.stateHolders
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 
@@ -16,7 +17,7 @@ class HistoryActivityStateHolder(allSequences: String = "") {
 
     fun getList(): List<Array<Any>> {
         val result = mutableListOf<Array<Any>>()
-        for (sequence in allSequences.split("\n")) {
+        allSequences.split("\n").forEach { sequence ->
             result.add(
                 arrayOf(
                     sequence.replace(", ", "").length,
@@ -24,6 +25,16 @@ class HistoryActivityStateHolder(allSequences: String = "") {
                 )
             )
         }
+        result.removeAt(result.size - 1)
+        Log.v(null, "Content of displayed list:\n${
+            result.joinToString(
+                separator = "\n"
+            ) {
+                it.joinToString(
+                    separator = ", "
+                )
+            }
+        }")
         return result
     }
 

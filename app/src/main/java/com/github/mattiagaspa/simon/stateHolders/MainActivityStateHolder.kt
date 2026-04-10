@@ -1,5 +1,6 @@
 package com.github.mattiagaspa.simon.stateHolders
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
@@ -26,7 +27,7 @@ class MainActivityStateHolder(sequence: String = "", allSequences: String = "") 
         if (sequence.isNotEmpty()) {
             sequence += ", "
         }
-        sequence += when (color) {
+        val colorString = when (color) {
             Red -> "R"
             Green -> "G"
             Blue -> "B"
@@ -35,17 +36,20 @@ class MainActivityStateHolder(sequence: String = "", allSequences: String = "") 
             Yellow -> "Y"
             else -> ""
         }
+        sequence += colorString
+        Log.i(null, "Added color $colorString to current sequence")
+        Log.v(null, "Content of sequence:\n$sequence")
     }
 
     fun clearSequence() {
         sequence = ""
+        Log.i(null, "Cleared sequence")
     }
 
     fun updateAllSequences() {
-        if (allSequences.isNotEmpty()) {
-            allSequences += "\n"
-        }
-        allSequences += sequence
+        allSequences += sequence + "\n"
+        Log.i(null, "Added $sequence to sequence history")
+        Log.v(null, "Content of allSequences:\n$allSequences")
     }
 
     // rememberSaveable saves out of the box primitive types inside the bundle.

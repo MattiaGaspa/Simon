@@ -14,20 +14,23 @@ import com.github.mattiagaspa.simon.ui.theme.*
 @Composable
 fun Keypad(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     val colorDisposition = arrayOf(
-        arrayOf(Red, Green, Blue),
-        arrayOf(Cyan, Magenta, Yellow)
+        arrayOf(Red, Green),
+        arrayOf(Blue, Cyan),
+        arrayOf(Magenta, Yellow)
     )
 
     Column(
         modifier = modifier.fillMaxWidth().padding(7.dp)
     ) {
-        for (row in colorDisposition) {
+        colorDisposition.forEach { row ->
             Row(
                 modifier = Modifier.weight(1f)
             ) {
-                for (color in row) {
+                row.forEach { color ->
                     Button(
-                        onClick = { stateHolder.addColor(color) },
+                        onClick = {
+                            stateHolder.addColor(color)
+                        },
                         modifier = Modifier.weight(1f).padding(5.dp).fillMaxHeight(),
                         shape = RectangleShape,
                         colors = ButtonDefaults.buttonColors(
