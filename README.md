@@ -3,12 +3,12 @@ First prototype of a Simon game variant, developed using Kotlin, Jetpack Compose
 
 ## Project architecture
 The key files of the project are located in:
-- `MainActivity.ky` and `HistoryActivity.kt`: Definition of the application's activities.
+- `MainActivity.kt` and `HistoryActivity.kt`: Definition of the application's activities.
 - `components/`: Package containing the Composable functions that make up the UI.
 - `stateHolders/`: Package containing the classes that manage the activities' states.
 - `ui.theme/Color.kt`: Where the application's colors are defined.
 
-The application was developed with modularity and reusability in mind: each UI feature is defined in its own Composable function (in `composable/`).
+The application was developed with modularity and reusability in mind: each UI feature is defined in its own Composable function (in `components/`).
 Therefore, UI management within the activities is limited to arranging these macro-components.
 Fragments were not used because they have not yet been covered in class and would be overkill for a project this scale.
 
@@ -20,12 +20,12 @@ Then, the component's interface is implemented for each activity's state holder 
 
 ## Project development
 This project was made with:
-- **Android Studio Panda 1 | 2025.3.1 Patch 1**
-  Build #AI-253.29346.138.2531.14876573, built on February 12, 2026
-- Runtime version: 21.0.9+-14649483-b1163.86 amd64
+- **Android Studio Panda 1 | 2025.3.3**
+  Build #AI-253.31033.145.2533.15113396, built on March 30, 2026
+  Runtime version: 21.0.10+-14961533-b1163.108 amd64
 - VM: OpenJDK 64-Bit Server VM by JetBrains s.r.o.
 - Toolkit: sun.awt.X11.XToolkit
-- Linux 6.19.10-1-default
+- Linux 6.19.11-1-default
 - openSUSE Tumbleweed; glibc: 2.42
 - GC: G1 Young Generation, G1 Concurrent GC, G1 Old Generation
 - Memory: 2048M
@@ -37,4 +37,7 @@ This project was made with:
 
 ## Tested on
  - Realme 9 Pro+ 5G: Android 14.0 ("UpsideDownCake"), API 34-ext21. Phone detailed specifications available [here](https://www.realme.com/it/realme-9-pro-plus/specs).
- - Virtual Pixel 2 phone.
+ - Virtual Pixel 2 phone with API 36.0.
+
+## Additional features
+- On phones with API >= 33 it is possible to select an app language different from the system one by going in **Settings > System > Languages & Input > App Languages > Simon**
