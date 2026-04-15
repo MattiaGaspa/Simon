@@ -16,6 +16,8 @@ import com.github.mattiagaspa.simon.stateHolders.HistoryActivityStateHolder
 import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
 class HistoryActivity : ComponentActivity() {
+    val stateHolder = HistoryActivityStateHolder()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,8 +32,9 @@ class HistoryActivity : ComponentActivity() {
                     val allSequences = intent.getStringExtra("allSequences") ?: ""
                     // Initialize the object to hold the activity states with the sequences just received.
                     val stateHolder = rememberSaveable(saver = HistoryActivityStateHolder.Saver) {
-                        HistoryActivityStateHolder(allSequences)
+                        stateHolder
                     }
+                    stateHolder.allSequences = allSequences
 
                     // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
                     when(configuration.orientation) {

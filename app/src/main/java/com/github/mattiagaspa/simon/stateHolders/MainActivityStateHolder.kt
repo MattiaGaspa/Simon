@@ -21,7 +21,7 @@ class MainActivityStateHolder(sequence: String = "", allSequences: String = "") 
     var sequence by mutableStateOf(sequence)
         private set
     var allSequences by mutableStateOf(allSequences)
-        private set
+        internal set
 
     fun addColor(color: Color) {
         if (sequence.isNotEmpty()) {

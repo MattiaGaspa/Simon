@@ -17,6 +17,8 @@ import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
 class MainActivity : ComponentActivity() {
+    val stateHolder = MainActivityStateHolder()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,8 +28,9 @@ class MainActivity : ComponentActivity() {
                     val configuration = LocalConfiguration.current
                     // Initialize the object that holds all the states for the current activity
                     val stateHolder = rememberSaveable(saver = MainActivityStateHolder.Saver) {
-                        MainActivityStateHolder()
+                        stateHolder
                     }
+
                     // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
                     when(configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {

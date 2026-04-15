@@ -13,7 +13,7 @@ import androidx.compose.runtime.saveable.*
 // with MainActivity and to be able to define helper methods
 class HistoryActivityStateHolder(allSequences: String = "") {
     var allSequences by mutableStateOf(allSequences)
-        private set
+        internal set
 
     fun getList(): List<Array<Any>> {
         val result = mutableListOf<Array<Any>>()
