@@ -9,8 +9,11 @@ import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 import com.github.mattiagaspa.simon.ui.theme.*
 
-// Composable to arrange the 3x2 buttons array.
-// Takes a MainActivityStateHolder object to add the first letter of the color pressed to the current sequence (with the method .addColor())
+/** Composable function that arranges buttons in a 3x2 grid.
+ * On button press, it adds the initial of the color with the `stateHolder.addColor()`
+ * @param modifier The modifier to be applied to the `Keypad`
+ * @param stateHolder Instance of `MainActivityStateHolder` that holds the states of the current activity
+ */
 @Composable
 fun Keypad(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     val colorDisposition = arrayOf(

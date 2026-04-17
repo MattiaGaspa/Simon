@@ -10,8 +10,10 @@ import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.R
 import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 
-// Composable function to visualize the current sequence
-// Takes a MainActivityStateHolder object to retrieve the current sequence
+/** Composable function to display the current game.
+ * @param modifier The modifier to be applied to the `SequenceVisualizer`
+ * @param stateHolder Instance of `MainActivityStateHolder` that holds the states of the current activity
+ */
 @Composable
 fun SequenceVisualizer(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     Row(

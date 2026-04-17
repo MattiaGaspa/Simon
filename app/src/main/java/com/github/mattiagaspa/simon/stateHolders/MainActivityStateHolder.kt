@@ -8,21 +8,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.github.mattiagaspa.simon.ui.theme.*
 
-// Class to hold all states of MainActivity. Contains:
-// - sequence: String: to hold the current sequence of pressed buttons.
-// - allSequences: String: to hold all the sequences pressed from the app launch.
-// Contains the helper methods:
-// - addColor: to add a color to the current sequence (when a button is pressed)
-// - clearSequence: to clear the sequence (when the `cancel` or `end game` button is pressed)
-// - updateAllSequences: to add the current sequence at the end of all sequences (used when the `end game` button is pressed)
-// Two rememberSaveable mutableStateOf string would have been enough, but I preferred not to pass many () -> Unit functions.
-// State control is now centralized for every component in the MainActivity activity.
+/** Class to hold all states of `MainActivity`.
+ * Instead of passing multiple lambdas to the composable functions of the project, I decided to wrap the states in a class to be able to define helper methods.
+ * Now, a single instance of the class is passed to the composable function and inside it the helper methods will be used.
+ * @param sequence Initial value for `sequence` variable
+ * @param allSequences Initial value for `allSequences` variable
+ */
 class MainActivityStateHolder(sequence: String = "", allSequences: String = "") {
+    /** String that contains the sequence of colors pressed in the current game.
+     * Colors are separated by `, `.
+     */
     var sequence by mutableStateOf(sequence)
         private set
+    /** String that contains the game history.
+     * Games are separated by `\n` character.
+     */
     var allSequences by mutableStateOf(allSequences)
         internal set
 
+    /** Add a color to the current game
+     * @param color Color to add in the sequence
+     */
     fun addColor(color: Color) {
         if (sequence.isNotEmpty()) {
             sequence += ", "
@@ -41,24 +47,25 @@ class MainActivityStateHolder(sequence: String = "", allSequences: String = "") 
         Log.v(null, "Content of sequence:\n$sequence")
     }
 
+    /** Clear current game sequence */
     fun clearSequence() {
         sequence = ""
         Log.i(null, "Cleared sequence")
     }
 
+    /** Add the current game sequence to the history */
     fun updateAllSequences() {
         allSequences += sequence + "\n"
         Log.i(null, "Added $sequence to sequence history")
         Log.v(null, "Content of allSequences:\n$allSequences")
     }
 
-    // rememberSaveable saves out of the box primitive types inside the bundle.
-    // In this case, we need to create a companion object to specify how to save the data in the bundle (in a list)
-    // and how to retrieve the data (passing the list's elements to the constructor)
-    // Documentation:
-    // - companion objects: https://kotlinlang.org/docs/object-declarations.html#companion-objects
-    // - rememberSaveable: https://developer.android.com/reference/kotlin/androidx/compose/runtime/saveable/rememberSaveable.composable#rememberSaveable(kotlin.Array,androidx.compose.runtime.saveable.Saver,kotlin.String,kotlin.Function0)
+    /** Companion object used to define how `rememberSavable` should save this class. */
     companion object {
+        /** `rememberSaveable` saves out of the box primitive types inside the bundle.
+         * `MainActivityStateHolder` is not a primitive object, we need to specify how to save and retrieve the data from a list.
+         * Documentation: [companion objects](https://kotlinlang.org/docs/object-declarations.html#companion-objects), [rememberSaveable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/saveable/rememberSaveable.composable#rememberSaveable(kotlin.Array,androidx.compose.runtime.saveable.Saver,kotlin.String,kotlin.Function0))
+         */
         val Saver: Saver<MainActivityStateHolder, *> = listSaver(
             save = { listOf(it.sequence, it.allSequences) },
             restore = {

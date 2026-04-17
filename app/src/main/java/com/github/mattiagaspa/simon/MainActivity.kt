@@ -53,7 +53,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Composable to define the layout for portrait screens.
+/** Composable function that builds the UI when the screen is in portrait mode
+ * @param modifier The modifier to be applied to the activity screen
+ * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
+ */
 @Composable
 fun MainActivityPortrait(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     Column(
@@ -74,7 +77,10 @@ fun MainActivityPortrait(modifier: Modifier = Modifier, stateHolder: MainActivit
     }
 }
 
-// Composable to define the layout for landscape screens.
+/** Composable function that builds the UI when the screen is in landscape mode
+ * @param modifier The modifier to be applied to the activity screen
+ * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
+ */
 @Composable
 fun MainActivityLandscape(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     // Split screen in half: one half for keypad and the other half for the sequence and the buttons

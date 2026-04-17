@@ -10,6 +10,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.stateHolders.HistoryActivityStateHolder
 
+/** Composable function to display all games.
+ * Uses `LazyColumn` to list, for each game, the number of colors pressed and the sequence (truncated if too long)
+ * @param modifier The modifier to be applied to the `SequenceList`
+ * @param stateHolder Instance of `HistoryActivityStateHolder` that holds the states of the current activity
+ */
 @Composable
 fun SequenceList(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
     val list = stateHolder.getList()

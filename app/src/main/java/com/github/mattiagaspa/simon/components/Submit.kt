@@ -12,10 +12,12 @@ import com.github.mattiagaspa.simon.HistoryActivity
 import com.github.mattiagaspa.simon.R
 import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 
-// Composable function to define the two buttons: the one to cancel the sequence and the one to end the game
-// Takes a MainActivityStateHolder object to:
-// - cancel the current sequence, with the .clearSequence() method, when `cancel` is pressed
-// - updates the string that holds all the sequences from the app launh, with the .updateAllSequences() method, and cancels the current sequence when `end game` is pressed
+/** Composable function to display games button.
+ * Use `Cancel` to clear the current sequence, by calling `stateHolder.clearSequence()`.
+ * Use `End game` to clear the current sequence and add the game to history, by calling `stateHolder.updateAllSequences()`.
+ * @param modifier The modifier to be applied to the `Submit`
+ * @param stateHolder Instance of `MainActivityStateHolder` that holds the states of the current activity
+ */
 @Composable
 fun Submit(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
     Row(

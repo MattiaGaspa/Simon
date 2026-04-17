@@ -58,7 +58,10 @@ class HistoryActivity : ComponentActivity() {
     }
 }
 
-// Composable to define the layout for portrait screens.
+/** Composable function that builds the UI when the screen is in portrait mode
+ * @param modifier The modifier to be applied to the activity screen
+ * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
+ */
 @Composable
 fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
     SequenceList(
@@ -67,7 +70,10 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryA
     )
 }
 
-// Composable to define the layout for landscape screens.
+/** Composable function that builds the UI when the screen is in landscape mode
+ * @param modifier The modifier to be applied to the activity screen
+ * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
+ */
 @Composable
 fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
     SequenceList(
