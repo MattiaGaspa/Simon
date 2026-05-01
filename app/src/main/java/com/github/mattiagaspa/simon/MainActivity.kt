@@ -1,5 +1,6 @@
 package com.github.mattiagaspa.simon
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,12 +34,15 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("history") {
                             HistoryScreen(
-                                stateHolder = stateHolder
+                                stateHolder = stateHolder,
+                                gameDetails = { index -> navController.navigate("details/${Uri.encode(index.toString())}") },
+                                startGame = { navController.navigate("game") }
                             )
                         }
-                        composable("details") {
+                        composable("details/{index}") { backStackEntry ->
                             DetailsActivity(
-                                stateHolder = stateHolder
+                                stateHolder = stateHolder,
+                                index = Uri.decode(backStackEntry.arguments?.getString("index")).toInt()
                             )
                         }
                         composable("game") {

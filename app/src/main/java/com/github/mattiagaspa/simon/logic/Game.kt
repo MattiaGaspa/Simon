@@ -25,11 +25,37 @@ data class Game(internal var sequence: String = "", internal var userSequence: S
      * @return True if the sequences are the same
      */
     fun isCorrect(): Boolean {
-        return sequence == userSequence
+        if (sequence == userSequence) {
+            Log.i(this::class.java.toString(), "User made the correct guess")
+            return true
+        } else {
+            Log.i(this::class.java.toString(), "User made the wrong guess")
+            return false
+        }
     }
 
-    /** Add a color to the current game
-     * @param color Color to add in the sequence
+
+    fun addUserColor(color: Color): Boolean {
+        if (userSequence.isNotEmpty()) {
+            userSequence += ", "
+        }
+        val colorString = when (color) {
+            Red -> "R"
+            Green -> "G"
+            Blue -> "B"
+            Cyan -> "C"
+            Magenta -> "M"
+            Yellow -> "Y"
+            else -> ""
+        }
+        userSequence += colorString
+        Log.i(this::class.java.toString(), "Added color $colorString to user's sequence")
+        Log.v(this::class.java.toString(), "Content of userSequence:\n$userSequence")
+        return isCorrect()
+    }
+
+    /** Add a color to the sequence the user has to guess
+     * @param color The color to be added
      */
     fun addColor(color: Color) {
         if (sequence.isNotEmpty()) {
@@ -45,13 +71,13 @@ data class Game(internal var sequence: String = "", internal var userSequence: S
             else -> ""
         }
         sequence += colorString
-        Log.i(null, "Added color $colorString to current sequence")
-        Log.v(null, "Content of sequence:\n$sequence")
+        Log.i(this::class.java.toString(), "Added color $colorString to sequence")
+        Log.v(this::class.java.toString(), "Content of sequence:\n$sequence")
     }
 
     /** Clear current game sequence */
     fun clearSequence() {
         sequence = ""
-        Log.i(null, "Cleared sequence")
+        Log.i(this::class.java.toString(), "Cleared sequence")
     }
 }

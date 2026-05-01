@@ -3,8 +3,7 @@ package com.github.mattiagaspa.simon.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.R
@@ -22,32 +21,45 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
         modifier = modifier.padding(4.dp)
     ) {
         Button(
-            onClick = { /*stateHolder.clearSequence()*/ },
+            onClick = { stateHolder.isGameStarted = true },
             modifier = Modifier
-                .padding(horizontal = 5.dp)
-                .weight(1f)
+                .padding(horizontal = 4.dp)
+                .weight(1f),
+            enabled = !stateHolder.isGameStarted
         ) {
-            Text(stringResource(R.string.cancel))
+            Text(
+                text = stringResource(R.string.start_game),
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1
+            )
         }
 
-        // The Intent() first argument is the context in which the intent is created.
-        // Since this composable function is defined outside MainActivity, we retrieve the context with LocalContext.current
-        val context = LocalContext.current
         Button(
-            onClick = {
-                /*stateHolder.updateAllSequences()
-                stateHolder.clearSequence()
-                val intent = Intent(context, HistoryActivity::class.java)
-                // Pass all the sequences in the intent
-                intent.putExtra("allSequences", stateHolder.allSequences)
-                context.startActivity(intent)
-                 */
-            },
+            onClick = { stateHolder.isGamePaused = !stateHolder.isGamePaused },
             modifier = Modifier
-                .padding(horizontal = 5.dp)
-                .weight(1f)
+                .padding(horizontal = 4.dp)
+                .weight(1f),
+            enabled = stateHolder.isGameStarted
         ) {
-            Text(stringResource(R.string.end_game))
+            Text(
+                text = stringResource(if (stateHolder.isGamePaused) R.string.resume else R.string.pause),
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1
+            )
+        }
+
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .weight(1f),
+            enabled = stateHolder.isGameStarted
+        ) {
+            Text(
+                text = stringResource(R.string.end_game),
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1
+            )
         }
     }
 }

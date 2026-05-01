@@ -1,5 +1,6 @@
 package com.github.mattiagaspa.simon.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,15 +26,27 @@ import com.github.mattiagaspa.simon.logic.StateHolder
  * @param stateHolder Instance of `HistoryActivityStateHolder` that holds the states of the current activity
  */
 @Composable
-fun SequenceList(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+fun SequenceList(modifier: Modifier = Modifier,
+                 stateHolder: StateHolder = StateHolder(),
+                 gameDetails: (Int) -> Unit,
+                 startGame: () -> Unit) {
     Box(modifier = modifier.fillMaxSize()) {
-        /*
-        val list = stateHolder.getList()
+        val list = stateHolder.allGames
         LazyColumn(
             modifier = modifier.padding(2.dp)
         ) {
             items(list.size) { index ->
                 Row(
+                    modifier = Modifier.padding(2.dp)
+                ) {
+                    Text(
+                        text = list[index].toString(),
+                        modifier = Modifier.clickable { gameDetails(index) },
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
+                /*Row(
                     modifier = Modifier.padding(2.dp)
                 ) {
                     Text(
@@ -47,12 +60,11 @@ fun SequenceList(modifier: Modifier = Modifier, stateHolder: StateHolder = State
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
-                }
+                }*/
             }
         }
-         */
         ExtendedFloatingActionButton(
-            onClick = { },
+            onClick = { startGame() },
             icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
             text = { Text(text = stringResource(R.string.new_game)) },
             modifier = Modifier

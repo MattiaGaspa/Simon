@@ -32,9 +32,10 @@ fun Keypad(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
                 row.forEach { color ->
                     Button(
                         onClick = {
-                            // stateHolder.addColor(color)
+                            if (stateHolder.isGameStarted and !stateHolder.isSequencePlayed) {
+                                stateHolder.addUserColor(color)
+                            }
                         },
-                        enabled = true, // Update to a state
                         modifier = Modifier.weight(1f).padding(5.dp).fillMaxHeight(),
                         shape = RectangleShape, // Change shape for sequence
                         colors = ButtonDefaults.buttonColors(
