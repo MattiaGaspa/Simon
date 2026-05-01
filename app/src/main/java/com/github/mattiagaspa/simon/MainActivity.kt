@@ -1,106 +1,54 @@
 package com.github.mattiagaspa.simon
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import com.github.mattiagaspa.simon.components.*
-import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.github.mattiagaspa.simon.logic.StateHolder
 import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
 class MainActivity : ComponentActivity() {
-    val stateHolder = MainActivityStateHolder()
+    val stateHolder = StateHolder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SimonTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val configuration = LocalConfiguration.current
-                    // Initialize the object that holds all the states for the current activity
-                    val stateHolder = rememberSaveable(saver = MainActivityStateHolder.Saver) {
-                        stateHolder
-                    }
+                val stateHolder: StateHolder = remember { stateHolder } // MAKE SAVABLE
+                val navController = rememberNavController()
 
-                    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
-                    when(configuration.orientation) {
-                        Configuration.ORIENTATION_PORTRAIT -> {
-                            MainActivityPortrait(
-                                modifier = Modifier.padding(innerPadding),
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "history",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("history") {
+                            HistoryScreen(
                                 stateHolder = stateHolder
                             )
                         }
-
-                        Configuration.ORIENTATION_LANDSCAPE -> {
-                            MainActivityLandscape(
-                                modifier = Modifier.padding(innerPadding),
+                        composable("details") {
+                            DetailsActivity(
+                                stateHolder = stateHolder
+                            )
+                        }
+                        composable("game") {
+                            GameScreen(
                                 stateHolder = stateHolder
                             )
                         }
                     }
                 }
             }
-        }
-    }
-}
-
-/** Composable function that builds the UI when the screen is in portrait mode
- * @param modifier The modifier to be applied to the activity screen
- * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
- */
-@Composable
-fun MainActivityPortrait(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
-    Column(
-        modifier = modifier
-    ) {
-        Keypad(
-            modifier = Modifier.align(Alignment.CenterHorizontally).weight(0.9f),
-            stateHolder = stateHolder
-        )
-        SequenceVisualizer(
-            modifier = Modifier.align(Alignment.CenterHorizontally).weight(0.2f),
-            stateHolder = stateHolder
-        )
-        Submit(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            stateHolder = stateHolder
-        )
-    }
-}
-
-/** Composable function that builds the UI when the screen is in landscape mode
- * @param modifier The modifier to be applied to the activity screen
- * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
- */
-@Composable
-fun MainActivityLandscape(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
-    // Split screen in half: one half for keypad and the other half for the sequence and the buttons
-    Row(
-        modifier = modifier
-    ) {
-        Keypad(
-            modifier = Modifier.weight(1f),
-            stateHolder = stateHolder
-        )
-        Column(
-            modifier = Modifier.fillMaxHeight().weight(1f)
-        ) {
-            SequenceVisualizer(
-                modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally),
-                stateHolder = stateHolder
-            )
-            Submit(
-                stateHolder = stateHolder
-            )
         }
     }
 }

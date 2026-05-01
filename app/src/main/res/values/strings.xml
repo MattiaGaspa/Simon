@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">Simon</string>
-    <string name="cancel">Cancel</string>
-    <string name="end">End game</string>
+    <string name="new_game">New game</string>
+    <string name="start_game">Start game</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="end_game">End game</string>
     <string name="sequence">Sequence</string>
+    <string name="cancel">Cancel</string>
 </resources>

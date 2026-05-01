@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.R
+import com.github.mattiagaspa.simon.logic.StateHolder
 import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 
 /** Composable function to display the current game.
@@ -15,13 +16,13 @@ import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
  * @param stateHolder Instance of `MainActivityStateHolder` that holds the states of the current activity
  */
 @Composable
-fun SequenceVisualizer(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
+fun SequenceVisualizer(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
     Row(
         modifier = modifier
     ) {
         // Used a read-only TextField instead of a simple Text so that the user can select and copy its content.
         TextField(
-            value = stateHolder.sequence,
+            value = "HELLO", // stateHolder.sequence,
             onValueChange = {},
             modifier = Modifier
                 .fillMaxWidth()

@@ -1,59 +1,30 @@
 package com.github.mattiagaspa.simon
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import com.github.mattiagaspa.simon.components.SequenceList
-import com.github.mattiagaspa.simon.stateHolders.HistoryActivityStateHolder
-import com.github.mattiagaspa.simon.ui.theme.SimonTheme
+import com.github.mattiagaspa.simon.logic.StateHolder
 
-class HistoryActivity : ComponentActivity() {
-    val stateHolder = HistoryActivityStateHolder()
+@Composable
+fun HistoryScreen(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+    val configuration = LocalConfiguration.current
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
+    when(configuration.orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> {
+            HistoryActivityPortrait(
+                modifier = modifier,
+                stateHolder = stateHolder
+            )
+        }
 
-        setContent {
-            SimonTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val configuration = LocalConfiguration.current
-
-                    // Retrieve all the sequences
-                    val intent = getIntent()
-                    val allSequences = intent.getStringExtra("allSequences") ?: ""
-                    // Initialize the object to hold the activity states with the sequences just received.
-                    val stateHolder = rememberSaveable(saver = HistoryActivityStateHolder.Saver) {
-                        stateHolder
-                    }
-                    stateHolder.allSequences = allSequences
-
-                    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
-                    when(configuration.orientation) {
-                        Configuration.ORIENTATION_PORTRAIT -> {
-                            HistoryActivityPortrait(
-                                modifier = Modifier.padding(innerPadding),
-                                stateHolder = stateHolder
-                            )
-                        }
-
-                        Configuration.ORIENTATION_LANDSCAPE -> {
-                            HistoryActivityLandscape(
-                                modifier = Modifier.padding(innerPadding),
-                                stateHolder = stateHolder
-                            )
-                        }
-                    }
-                }
-            }
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            HistoryActivityLandscape(
+                modifier = modifier,
+                stateHolder = stateHolder
+            )
         }
     }
 }
@@ -63,7 +34,7 @@ class HistoryActivity : ComponentActivity() {
  * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
  */
 @Composable
-fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
+fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
     SequenceList(
         modifier,
         stateHolder
@@ -75,7 +46,7 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier, stateHolder: HistoryA
  * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
  */
 @Composable
-fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: HistoryActivityStateHolder = HistoryActivityStateHolder()) {
+fun HistoryActivityLandscape(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
     SequenceList(
         modifier,
         stateHolder

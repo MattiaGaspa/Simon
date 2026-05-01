@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
+import com.github.mattiagaspa.simon.logic.StateHolder
 import com.github.mattiagaspa.simon.ui.theme.*
 
 /** Composable function that arranges buttons in a 3x2 grid.
@@ -15,7 +15,7 @@ import com.github.mattiagaspa.simon.ui.theme.*
  * @param stateHolder Instance of `MainActivityStateHolder` that holds the states of the current activity
  */
 @Composable
-fun Keypad(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder = MainActivityStateHolder()) {
+fun Keypad(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
     val colorDisposition = arrayOf(
         arrayOf(Red, Green),
         arrayOf(Blue, Cyan),
@@ -32,10 +32,11 @@ fun Keypad(modifier: Modifier = Modifier, stateHolder: MainActivityStateHolder =
                 row.forEach { color ->
                     Button(
                         onClick = {
-                            stateHolder.addColor(color)
+                            // stateHolder.addColor(color)
                         },
+                        enabled = true, // Update to a state
                         modifier = Modifier.weight(1f).padding(5.dp).fillMaxHeight(),
-                        shape = RectangleShape,
+                        shape = RectangleShape, // Change shape for sequence
                         colors = ButtonDefaults.buttonColors(
                             containerColor = color
                         )
