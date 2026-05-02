@@ -3,11 +3,16 @@ package com.github.mattiagaspa.simon.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.logic.StateHolder
 import com.github.mattiagaspa.simon.ui.theme.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /** Composable function that arranges buttons in a 3x2 grid.
  * On button press, it adds the initial of the color with the `stateHolder.addColor()`
@@ -16,6 +21,7 @@ import com.github.mattiagaspa.simon.ui.theme.*
  */
 @Composable
 fun Keypad(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+    val coroutineScope = rememberCoroutineScope()
     val colorDisposition = arrayOf(
         arrayOf(Red, Green),
         arrayOf(Blue, Cyan),
@@ -34,12 +40,19 @@ fun Keypad(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
                         onClick = {
                             if (stateHolder.isGameStarted and !stateHolder.isSequencePlayed) {
                                 stateHolder.addUserColor(color)
+                                coroutineScope.launch {
+                                    stateHolder.flashButton(color)
+                                }
                             }
                         },
                         modifier = Modifier.weight(1f).padding(5.dp).fillMaxHeight(),
-                        shape = RectangleShape, // Change shape for sequence
+                        shape = RectangleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = color
+                            containerColor = if (stateHolder.buttonColorAnimation == color.toArgb())
+                                color
+                            else
+                                color.copy(alpha = 0.5f)
+
                         )
                     ) {  }
                 }

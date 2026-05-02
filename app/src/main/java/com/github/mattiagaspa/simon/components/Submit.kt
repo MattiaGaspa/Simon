@@ -23,7 +23,7 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
         Button(
             onClick = {
                 stateHolder.isGameStarted = true
-                stateHolder.generateSequenceCoroutine()
+                stateHolder.generateSequence()
             },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
