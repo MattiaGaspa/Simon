@@ -21,7 +21,10 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
         modifier = modifier.padding(4.dp)
     ) {
         Button(
-            onClick = { stateHolder.isGameStarted = true },
+            onClick = {
+                stateHolder.isGameStarted = true
+                stateHolder.generateSequenceCoroutine()
+            },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .weight(1f),
@@ -39,7 +42,7 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .weight(1f),
-            enabled = stateHolder.isGameStarted
+            enabled = stateHolder.isGameStarted and stateHolder.isSequencePlayed
         ) {
             Text(
                 text = stringResource(if (stateHolder.isGamePaused) R.string.resume else R.string.pause),
@@ -49,11 +52,15 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
         }
 
         Button(
-            onClick = {},
+            onClick = {
+                stateHolder.isGameOver = true
+                stateHolder.isSequencePlayed = false
+                stateHolder.addGame()
+            },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .weight(1f),
-            enabled = stateHolder.isGameStarted
+            enabled = stateHolder.isGameStarted and !stateHolder.isGameOver
         ) {
             Text(
                 text = stringResource(R.string.end_game),

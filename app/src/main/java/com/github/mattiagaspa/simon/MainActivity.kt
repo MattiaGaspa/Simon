@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SimonTheme {
-                val stateHolder: StateHolder = remember { stateHolder } // MAKE SAVABLE
+                val stateHolder: StateHolder = rememberSaveable(saver = StateHolder.Saver) { stateHolder }
                 val navController = rememberNavController()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -36,7 +36,10 @@ class MainActivity : ComponentActivity() {
                             HistoryScreen(
                                 stateHolder = stateHolder,
                                 gameDetails = { index -> navController.navigate("details/${Uri.encode(index.toString())}") },
-                                startGame = { navController.navigate("game") }
+                                startGame = {
+                                    stateHolder.reset()
+                                    navController.navigate("game")
+                                }
                             )
                         }
                         composable("details/{index}") { backStackEntry ->

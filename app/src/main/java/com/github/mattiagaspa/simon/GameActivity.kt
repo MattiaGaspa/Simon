@@ -12,7 +12,6 @@ import com.github.mattiagaspa.simon.components.Keypad
 import com.github.mattiagaspa.simon.components.SequenceVisualizer
 import com.github.mattiagaspa.simon.components.Submit
 import com.github.mattiagaspa.simon.logic.StateHolder
-import com.github.mattiagaspa.simon.stateHolders.MainActivityStateHolder
 
 @Composable
 fun GameScreen(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
@@ -21,11 +20,17 @@ fun GameScreen(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHo
     // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
     when(configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
-            MainActivityPortrait()
+            MainActivityPortrait(
+                modifier = modifier,
+                stateHolder = stateHolder
+            )
         }
 
         Configuration.ORIENTATION_LANDSCAPE -> {
-            MainActivityLandscape()
+            MainActivityLandscape(
+                modifier = modifier,
+                stateHolder = stateHolder
+            )
         }
     }
 }

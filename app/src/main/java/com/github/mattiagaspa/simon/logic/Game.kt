@@ -22,14 +22,29 @@ data class Game(internal var sequence: String = "", internal var userSequence: S
     }
 
     /** Check if the user has inputted the correct color
+     * @param log Whether to log the result
      * @return True if the sequences are the same
      */
-    fun isCorrect(): Boolean {
+    fun isCorrect(log: Boolean = true): Boolean {
         if (sequence == userSequence) {
-            Log.i(this::class.java.toString(), "User made the correct guess")
+            if (log) Log.i(this::class.java.toString(), "User made the correct guess")
             return true
         } else {
-            Log.i(this::class.java.toString(), "User made the wrong guess")
+            if (log) Log.i(this::class.java.toString(), "User made the wrong guess")
+            return false
+        }
+    }
+
+    /** Check if the user is inserting the correct color
+     * @param log Whether to log the result
+     * @return True if the sequence inputted by the user is the start of the sequence
+     */
+    fun isCorrectGuess(log: Boolean = true): Boolean {
+        if (sequence.startsWith(userSequence)) {
+            if (log) Log.i(this::class.java.toString(), "User is inserting the correct color")
+            return true
+        } else {
+            if (log) Log.i(this::class.java.toString(), "User is inserting the wrong color")
             return false
         }
     }
