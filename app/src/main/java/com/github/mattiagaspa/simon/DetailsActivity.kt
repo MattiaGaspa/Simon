@@ -5,12 +5,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import com.github.mattiagaspa.simon.components.GameDetails
-import com.github.mattiagaspa.simon.logic.StateHolder
+import com.github.mattiagaspa.simon.logic.SimonViewModel
 
+/** Composable function that defines the behavior of the details screen
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param index The index of the match to be shown
+ */
 @Composable
 fun DetailsActivity(
     modifier: Modifier = Modifier,
-    stateHolder: StateHolder = StateHolder(),
+    viewModel: SimonViewModel = SimonViewModel(),
     index: Int
 ) {
     val configuration = LocalConfiguration.current
@@ -20,7 +25,7 @@ fun DetailsActivity(
         Configuration.ORIENTATION_PORTRAIT -> {
             DetailsActivityPortrait(
                 modifier = modifier,
-                stateHolder = stateHolder,
+                viewModel = viewModel,
                 index = index
             )
         }
@@ -28,7 +33,7 @@ fun DetailsActivity(
         Configuration.ORIENTATION_LANDSCAPE -> {
             DetailsActivityLandscape(
                 modifier = modifier,
-                stateHolder = stateHolder,
+                viewModel = viewModel,
                 index = index
             )
         }
@@ -36,29 +41,33 @@ fun DetailsActivity(
 }
 
 /** Composable function that builds the UI when the screen is in portrait mode
- * @param modifier The modifier to be applied to the activity screen
- * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
- * @param index Index of the game to be seen
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param index The index of the match to be shown
  */
 @Composable
-fun DetailsActivityPortrait(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder(), index: Int) {
+fun DetailsActivityPortrait(modifier: Modifier = Modifier,
+                            viewModel: SimonViewModel = SimonViewModel(),
+                            index: Int) {
     GameDetails(
         modifier,
-        stateHolder,
+        viewModel,
         index
     )
 }
 
 /** Composable function that builds the UI when the screen is in landscape mode
- * @param modifier The modifier to be applied to the activity screen
- * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
- * @param index Index of the game to be seen
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param index The index of the match to be shown
  */
 @Composable
-fun DetailsActivityLandscape(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder(), index: Int) {
+fun DetailsActivityLandscape(modifier: Modifier = Modifier,
+                             viewModel: SimonViewModel = SimonViewModel(),
+                             index: Int) {
     GameDetails(
         modifier,
-        stateHolder,
+        viewModel,
         index
     )
 }

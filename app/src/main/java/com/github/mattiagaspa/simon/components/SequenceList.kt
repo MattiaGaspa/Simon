@@ -1,37 +1,37 @@
 package com.github.mattiagaspa.simon.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.R
-import com.github.mattiagaspa.simon.logic.StateHolder
+import com.github.mattiagaspa.simon.logic.SimonViewModel
 
 /** Composable function to display all games.
  * Uses `LazyColumn` to list, for each game, the number of colors pressed and the sequence (truncated if too long)
- * @param modifier The modifier to be applied to the `SequenceList`
- * @param stateHolder Instance of `HistoryActivityStateHolder` that holds the states of the current activity
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param gameDetails Callback function to be called when a game is selected
+ * @param startGame Callback function to be called when the user wants to start a new game
  */
 @Composable
 fun SequenceList(modifier: Modifier = Modifier,
-                 stateHolder: StateHolder = StateHolder(),
+                 viewModel: SimonViewModel = SimonViewModel(),
                  gameDetails: (Int) -> Unit,
                  startGame: () -> Unit) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Box(modifier = modifier.fillMaxSize()) {
-        val list = stateHolder.allGames
+        val list = uiState.allGames
         LazyColumn(
             modifier = modifier.padding(2.dp)
         ) {
@@ -46,21 +46,6 @@ fun SequenceList(modifier: Modifier = Modifier,
                         maxLines = 1
                     )
                 }
-                /*Row(
-                    modifier = Modifier.padding(2.dp)
-                ) {
-                    Text(
-                        text = list[index][0].toString(),
-                        modifier = Modifier.weight(0.1f),
-                        maxLines = 1
-                    )
-                    Text(
-                        text = list[index][1].toString(),
-                        modifier = Modifier.weight(0.9f),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }*/
             }
         }
         ExtendedFloatingActionButton(

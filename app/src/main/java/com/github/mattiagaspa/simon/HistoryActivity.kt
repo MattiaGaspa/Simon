@@ -1,25 +1,27 @@
 package com.github.mattiagaspa.simon
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toUpperCase
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.github.mattiagaspa.simon.components.SequenceList
-import com.github.mattiagaspa.simon.logic.StateHolder
+import com.github.mattiagaspa.simon.logic.SimonViewModel
 
+/** Composable function that defines the behavior of the history screen
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param gameDetails Callback function to be called when a game is selected
+ * @param startGame Callback function to be called when the user wants to start a new game
+ */
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
-    stateHolder: StateHolder = StateHolder(),
+    viewModel: SimonViewModel = SimonViewModel(),
     gameDetails: (Int) -> Unit,
     startGame: () -> Unit
 ) {
@@ -30,7 +32,7 @@ fun HistoryScreen(
         Configuration.ORIENTATION_PORTRAIT -> {
             HistoryActivityPortrait(
                 modifier = modifier,
-                stateHolder = stateHolder,
+                viewModel = viewModel,
                 gameDetails = gameDetails,
                 startGame = startGame
             )
@@ -39,7 +41,7 @@ fun HistoryScreen(
         Configuration.ORIENTATION_LANDSCAPE -> {
             HistoryActivityLandscape(
                 modifier = modifier,
-                stateHolder = stateHolder,
+                viewModel = viewModel,
                 gameDetails = gameDetails,
                 startGame = startGame
             )
@@ -48,14 +50,14 @@ fun HistoryScreen(
 }
 
 /** Composable function that builds the UI when the screen is in portrait mode
- * @param modifier The modifier to be applied to the activity screen
- * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
- * @param gameDetails Action to be performed when clicking a game
- * @param startGame Action to be performed when the `Start game` button is pressed
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param gameDetails Callback function to be called when a game is selected
+ * @param startGame Callback function to be called when the user wants to start a new game
  */
 @Composable
 fun HistoryActivityPortrait(modifier: Modifier = Modifier,
-                            stateHolder: StateHolder = StateHolder(),
+                            viewModel: SimonViewModel = SimonViewModel(),
                             gameDetails: (Int) -> Unit,
                             startGame: () -> Unit) {
     Column(modifier = modifier) {
@@ -66,7 +68,7 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier,
         )
         SequenceList(
             Modifier.weight(1f),
-            stateHolder,
+            viewModel,
             gameDetails,
             startGame
         )
@@ -74,14 +76,14 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier,
 }
 
 /** Composable function that builds the UI when the screen is in landscape mode
- * @param modifier The modifier to be applied to the activity screen
- * @param stateHolder Instance of MainActivityStateHolder that holds the states of the current activity
- * @param gameDetails Action to be performed when clicking a game
- * @param startGame Action to be performed when the `Start game` button is pressed
+ * @param modifier The modifier to be applied
+ * @param viewModel The `SimonViewModel` to be used
+ * @param gameDetails Callback function to be called when a game is selected
+ * @param startGame Callback function to be called when the user wants to start a new game
  */
 @Composable
 fun HistoryActivityLandscape(modifier: Modifier = Modifier,
-                             stateHolder: StateHolder = StateHolder(),
+                             viewModel: SimonViewModel = SimonViewModel(),
                              gameDetails: (Int) -> Unit,
                              startGame: () -> Unit) {
     Column(modifier = modifier) {
@@ -92,7 +94,7 @@ fun HistoryActivityLandscape(modifier: Modifier = Modifier,
         )
         SequenceList(
             Modifier.weight(1f),
-            stateHolder,
+            viewModel,
             gameDetails,
             startGame
         )

@@ -2,33 +2,36 @@ package com.github.mattiagaspa.simon.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.R
-import com.github.mattiagaspa.simon.logic.StateHolder
+import com.github.mattiagaspa.simon.logic.SimonViewModel
 
 /** Composable function to display games button.
- * Use `Cancel` to clear the current sequence, by calling `stateHolder.clearSequence()`.
- * Use `End game` to clear the current sequence and add the game to history, by calling `stateHolder.updateAllSequences()`.
+ * The user starts the game by pressing the `Start game` button. The sequence is generated until the game is over.
+ * When the sequence is played, the user cna stop it by pressing the `Pause` button. The user can resume the game by pressing the `Resume` button.
+ * The user can end the game by pressing the `End game` button.
  * @param modifier The modifier to be applied to the `Submit`
- * @param stateHolder Instance of `MainActivityStateHolder` that holds the states of the current activity
+ * @param viewModel The `SimonViewModel` to be used
  */
 @Composable
-fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder()) {
+fun Submit(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Row(
         modifier = modifier.padding(4.dp)
     ) {
         Button(
             onClick = {
-                stateHolder.isGameStarted = true
-                stateHolder.generateSequence()
+                viewModel.startGame()
+                viewModel.generateSequence()
             },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .weight(1f),
-            enabled = !stateHolder.isGameStarted
+            enabled = !uiState.isGameStarted
         ) {
             Text(
                 text = stringResource(R.string.start_game),
@@ -38,14 +41,14 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
         }
 
         Button(
-            onClick = { stateHolder.isGamePaused = !stateHolder.isGamePaused },
+            onClick = { viewModel.togglePauseResume() },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .weight(1f),
-            enabled = stateHolder.isGameStarted and stateHolder.isSequencePlayed
+            enabled = uiState.isGameStarted && uiState.isSequencePlayed
         ) {
             Text(
-                text = stringResource(if (stateHolder.isGamePaused) R.string.resume else R.string.pause),
+                text = stringResource(if (uiState.isGamePaused) R.string.resume else R.string.pause),
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1
             )
@@ -53,14 +56,13 @@ fun Submit(modifier: Modifier = Modifier, stateHolder: StateHolder = StateHolder
 
         Button(
             onClick = {
-                stateHolder.isGameOver = true
-                stateHolder.isSequencePlayed = false
-                stateHolder.addGame()
+                viewModel.stopGame()
+                viewModel.addGameToHistory()
             },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .weight(1f),
-            enabled = stateHolder.isGameStarted and !stateHolder.isGameOver
+            enabled = uiState.isGameStarted and !uiState.isGameOver
         ) {
             Text(
                 text = stringResource(R.string.end_game),

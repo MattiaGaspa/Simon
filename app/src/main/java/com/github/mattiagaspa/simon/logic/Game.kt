@@ -1,98 +1,50 @@
 package com.github.mattiagaspa.simon.logic
 
 import android.util.Log
-import androidx.compose.ui.graphics.Color
-import com.github.mattiagaspa.simon.ui.theme.*
 
 /** Class used to represent a game
  * @param sequence The sequence that the user must replicate
  * @param userSequence The sequence inputted by the user
  */
-data class Game(internal var sequence: String = "", internal var userSequence: String = "") {
+data class Game(
+    internal var sequence: String = "",
+    internal var userSequence: String = "",
+) {
     /** Number of colors pressed */
     val length: Int
         get() = sequence.replace(", ", "").length
 
     /** Number of correct colors pressed by the user */
     val correctLength: Int
-        get() = if (isCorrect()) {length} else {length-1}
+        get() = if (isCorrect()) length else (length - 1).coerceAtLeast(0)
 
-    override fun toString(): String {
-        return sequence
+    override fun toString(): String = sequence
+}
+
+/** Function to check if the user made the correct guess
+ * @param log If true, logs the result
+ * @return True if the user made the correct guess, false otherwise
+ */
+fun Game.isCorrect(log: Boolean = true): Boolean {
+    if (sequence == userSequence) {
+        if (log) Log.i(this::class.java.toString(), "User made the correct guess")
+        return true
+    } else {
+        if (log) Log.i(this::class.java.toString(), "User made the wrong guess")
+        return false
     }
+}
 
-    /** Check if the user has inputted the correct color
-     * @param log Whether to log the result
-     * @return True if the sequences are the same
-     */
-    fun isCorrect(log: Boolean = true): Boolean {
-        if (sequence == userSequence) {
-            if (log) Log.i(this::class.java.toString(), "User made the correct guess")
-            return true
-        } else {
-            if (log) Log.i(this::class.java.toString(), "User made the wrong guess")
-            return false
-        }
-    }
-
-    /** Check if the user is inserting the correct color
-     * @param log Whether to log the result
-     * @return True if the sequence inputted by the user is the start of the sequence
-     */
-    fun isCorrectGuess(log: Boolean = true): Boolean {
-        if (sequence.startsWith(userSequence)) {
-            if (log) Log.i(this::class.java.toString(), "User is inserting the correct color")
-            return true
-        } else {
-            if (log) Log.i(this::class.java.toString(), "User is inserting the wrong color")
-            return false
-        }
-    }
-
-
-    fun addUserColor(color: Color): Boolean {
-        if (userSequence.isNotEmpty()) {
-            userSequence += ", "
-        }
-        val colorString = when (color) {
-            Red -> "R"
-            Green -> "G"
-            Blue -> "B"
-            Cyan -> "C"
-            Magenta -> "M"
-            Yellow -> "Y"
-            else -> ""
-        }
-        userSequence += colorString
-        Log.i(this::class.java.toString(), "Added color $colorString to user's sequence")
-        Log.v(this::class.java.toString(), "Content of userSequence:\n$userSequence")
-        return isCorrect()
-    }
-
-    /** Add a color to the sequence the user has to guess
-     * @param color The color to be added
-     */
-    fun addColor(color: Color) {
-        if (sequence.isNotEmpty()) {
-            sequence += ", "
-        }
-        val colorString = when (color) {
-            Red -> "R"
-            Green -> "G"
-            Blue -> "B"
-            Cyan -> "C"
-            Magenta -> "M"
-            Yellow -> "Y"
-            else -> ""
-        }
-        sequence += colorString
-        Log.i(this::class.java.toString(), "Added color $colorString to sequence")
-        Log.v(this::class.java.toString(), "Content of sequence:\n$sequence")
-    }
-
-    /** Clear current game sequence */
-    fun clearSequence() {
-        sequence = ""
-        Log.i(this::class.java.toString(), "Cleared sequence")
+/** Function to check if the user is inserting the correct color
+ * @param log If true, logs the result
+ * @return True if the user is inserting the correct color, false otherwise
+ */
+fun Game.isCorrectGuess(log: Boolean = true): Boolean {
+    if (sequence.startsWith(userSequence)) {
+        if (log) Log.i(this::class.java.toString(), "User is inserting the correct color")
+        return true
+    } else {
+        if (log) Log.i(this::class.java.toString(), "User is inserting the wrong color")
+        return false
     }
 }
