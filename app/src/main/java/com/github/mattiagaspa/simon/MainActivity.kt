@@ -15,12 +15,15 @@ import com.github.mattiagaspa.simon.ui.theme.SimonTheme
 
 /** Main activity that manages the application navigation. */
 class MainActivity : ComponentActivity() {
+    /** ViewModel to update the application state */
+    private lateinit var viewModel: SimonViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SimonTheme {
-                val viewModel: SimonViewModel = viewModel()
+                viewModel = viewModel()
                 val navController = rememberNavController()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -54,5 +57,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.release()
     }
 }

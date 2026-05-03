@@ -15,7 +15,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
 @Composable
 fun DetailsActivity(
     modifier: Modifier = Modifier,
-    viewModel: SimonViewModel = SimonViewModel(),
+    viewModel: SimonViewModel,
     index: Int
 ) {
     val configuration = LocalConfiguration.current
@@ -47,7 +47,7 @@ fun DetailsActivity(
  */
 @Composable
 fun DetailsActivityPortrait(modifier: Modifier = Modifier,
-                            viewModel: SimonViewModel = SimonViewModel(),
+                            viewModel: SimonViewModel,
                             index: Int) {
     GameDetails(
         modifier,
@@ -63,7 +63,7 @@ fun DetailsActivityPortrait(modifier: Modifier = Modifier,
  */
 @Composable
 fun DetailsActivityLandscape(modifier: Modifier = Modifier,
-                             viewModel: SimonViewModel = SimonViewModel(),
+                             viewModel: SimonViewModel,
                              index: Int) {
     GameDetails(
         modifier,

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cancel">Cancella</string>
     <string name="end_game">Fine partita</string>
     <string name="sequence">Sequenza</string>
     <string name="new_game">Nuovo gioco</string>

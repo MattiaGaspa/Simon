@@ -18,7 +18,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  * @param viewModel The `SimonViewModel` to be used
  */
 @Composable
-fun Submit(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewModel()) {
+fun Submit(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Row(
         modifier = modifier.padding(4.dp)

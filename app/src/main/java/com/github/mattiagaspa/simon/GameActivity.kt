@@ -16,7 +16,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  * @param viewModel The `SimonViewModel` to be used
  */
 @Composable
-fun GameScreen(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewModel()) {
+fun GameScreen(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
     val configuration = LocalConfiguration.current
 
     // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
@@ -42,7 +42,7 @@ fun GameScreen(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonV
  * @param viewModel The `SimonViewModel` to be used
  */
 @Composable
-fun MainActivityPortrait(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewModel()) {
+fun MainActivityPortrait(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
     Column(
         modifier = modifier
     ) {
@@ -66,7 +66,7 @@ fun MainActivityPortrait(modifier: Modifier = Modifier, viewModel: SimonViewMode
  * @param viewModel The `SimonViewModel` to be used
  */
 @Composable
-fun MainActivityLandscape(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewModel()) {
+fun MainActivityLandscape(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
     // Split screen in half: one half for keypad and the other half for the sequence and the buttons
     Row(
         modifier = modifier

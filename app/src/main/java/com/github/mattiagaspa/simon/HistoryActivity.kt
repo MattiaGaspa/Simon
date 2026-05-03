@@ -21,7 +21,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
-    viewModel: SimonViewModel = SimonViewModel(),
+    viewModel: SimonViewModel,
     gameDetails: (Int) -> Unit,
     startGame: () -> Unit
 ) {
@@ -57,7 +57,7 @@ fun HistoryScreen(
  */
 @Composable
 fun HistoryActivityPortrait(modifier: Modifier = Modifier,
-                            viewModel: SimonViewModel = SimonViewModel(),
+                            viewModel: SimonViewModel,
                             gameDetails: (Int) -> Unit,
                             startGame: () -> Unit) {
     Column(modifier = modifier) {
@@ -83,7 +83,7 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier,
  */
 @Composable
 fun HistoryActivityLandscape(modifier: Modifier = Modifier,
-                             viewModel: SimonViewModel = SimonViewModel(),
+                             viewModel: SimonViewModel,
                              gameDetails: (Int) -> Unit,
                              startGame: () -> Unit) {
     Column(modifier = modifier) {

@@ -18,7 +18,7 @@ import com.github.mattiagaspa.simon.ui.theme.*
  * @param viewModel The `SimonViewModel` to be used
  */
 @Composable
-fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewModel()) {
+fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colorDisposition = arrayOf(
         arrayOf(Red, Green),
@@ -41,8 +41,8 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewM
                     Button(
                         onClick = {
                             // The button works only when the game is started and the sequence is not playing
-                            if (uiState.isGameStarted and !uiState.isSequencePlayed) {
-                                viewModel.addUserColor(color)
+                            if (uiState.isGameStarted and !uiState.isSequencePlayed and !uiState.isGameOver) {
+                                if (viewModel.addUserColor(color)) viewModel.playSound(color)
                             }
                         },
                         modifier = Modifier
@@ -51,8 +51,8 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel = SimonViewM
                             .fillMaxHeight(),
                         shape = RectangleShape,
                         colors = ButtonDefaults.buttonColors(
-                            // Light up only when pressed or the sequence plays the current button
-                            containerColor = if (uiState.buttonColorAnimation == color || isPressed)
+                            // Light up only when pressed, and the sequence is not playing, or the sequence plays the current button
+                            containerColor = if (uiState.buttonColorAnimation == color || (isPressed && !uiState.isSequencePlayed && !uiState.isGameOver))
                                 color
                             else
                                 color.copy(alpha = 0.5f)

@@ -12,7 +12,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  */
 @Composable
 fun GameDetails(modifier: Modifier = Modifier,
-                viewModel: SimonViewModel = SimonViewModel(),
+                viewModel: SimonViewModel,
                 index: Int) {
     val uiState by viewModel.uiState.collectAsState()
     Text(

@@ -26,7 +26,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  */
 @Composable
 fun SequenceList(modifier: Modifier = Modifier,
-                 viewModel: SimonViewModel = SimonViewModel(),
+                 viewModel: SimonViewModel,
                  gameDetails: (Int) -> Unit,
                  startGame: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
