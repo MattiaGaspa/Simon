@@ -57,7 +57,6 @@ fun Submit(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
         Button(
             onClick = {
                 viewModel.stopGame()
-                viewModel.addGameToHistory()
             },
             modifier = Modifier
                 .padding(horizontal = 4.dp)

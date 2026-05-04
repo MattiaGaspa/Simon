@@ -1,11 +1,13 @@
 package com.github.mattiagaspa.simon
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.components.Keypad
 import com.github.mattiagaspa.simon.components.SequenceVisualizer
 import com.github.mattiagaspa.simon.components.Submit
@@ -14,10 +16,21 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
 /** Composable function that defines the behavior of the game screen
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun GameScreen(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
+fun GameScreen(modifier: Modifier = Modifier,
+               viewModel: SimonViewModel,
+               onBack: () -> Unit
+) {
     val configuration = LocalConfiguration.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    BackHandler(
+        enabled = uiState.isGameStarted && !uiState.isGameOver
+    ) {
+        viewModel.stopGame()
+        onBack()
+    }
 
     // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
     when(configuration.orientation) {

@@ -66,8 +66,10 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     /** Stop the game */
     fun stopGame() {
         gameJob?.cancel()
+        addGameToHistory()
         soundPool.autoPause()
-        soundIds["Game Over"]?.let { soundPool.play(it, 1f, 1f, 0, 0, 1f) }
+        if (currentState.game.userSequence.isNotEmpty())
+            soundIds["Game Over"]?.let { soundPool.play(it, 1f, 1f, 0, 0, 1f) }
         _uiState.update { currentState ->
             currentState.copy(
                 isSequencePlayed = false,
@@ -158,10 +160,8 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     Log.i(this::class.java.toString(), "Game over")
                     stopGame()
-                    //_uiState.update { currentState -> currentState.copy(isGameOver = true) }
                 }
             }
-            addGameToHistory()
         }
     }
 
