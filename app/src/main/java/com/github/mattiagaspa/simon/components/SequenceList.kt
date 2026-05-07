@@ -37,7 +37,7 @@ fun SequenceList(modifier: Modifier = Modifier,
         ) {
             items(list.size) { index ->
                 Row(
-                    modifier = Modifier.padding(2.dp)
+                    modifier = Modifier.padding(2.dp).fillParentMaxWidth()
                 ) {
                     Text(
                         text = list[index].toString(),

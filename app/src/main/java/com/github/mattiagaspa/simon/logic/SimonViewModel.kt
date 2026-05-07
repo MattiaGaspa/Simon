@@ -56,6 +56,13 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
         soundPool.release()
     }
 
+    /** Populate game history with games from database */
+    fun populateHistory(allGames: List<Game>) {
+        _uiState.update { currentState ->
+            currentState.copy(allGames = allGames as MutableList<Game>)
+        }
+    }
+
     /** Start the game */
     fun startGame() {
         _uiState.update { currentState ->
@@ -65,11 +72,23 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Stop the game */
     fun stopGame() {
+        // Stop sequence generation
         gameJob?.cancel()
-        addGameToHistory()
+        // Add game to history if user has inputted at least one color
+        _uiState.update { currentState ->
+            if (!(currentState.game.sequence.length == 1 && currentState.game.userSequence.isEmpty())) {
+                Log.i(this::class.java.simpleName, "Adding current game to allGames")
+                currentState.copy(allGames = currentState.allGames.toMutableList().apply { add(currentState.game) })
+            } else {
+                Log.i(this::class.java.simpleName, "Not adding current game to allGames")
+                currentState
+            }
+        }
+        // Stop sounds and play Game Over if the sequence is not empty
         soundPool.autoPause()
         if (currentState.game.userSequence.isNotEmpty())
             soundIds["Game Over"]?.let { soundPool.play(it, 1f, 1f, 0, 0, 1f) }
+        // Set up flags
         _uiState.update { currentState ->
             currentState.copy(
                 isSequencePlayed = false,
@@ -127,6 +146,14 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                         game = currentState.game.copy(sequence = currentSequence)
                     )
                 }
+
+                // Empty user sequence
+                _uiState.update { currentState ->
+                    Log.i(this::class.java.simpleName, "Emptying user's sequence")
+                    currentState.copy(
+                        game = currentState.game.copy(userSequence = "")
+                    )
+                }
                 // Play animation and sound
                 _uiState.update { currentState -> currentState.copy(isSequencePlayed = true) }
                 currentState.game.sequence.split(", ").filter { it.isNotEmpty() }.forEach { colorString ->
@@ -139,14 +166,6 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                     soundPool.resume(soundId)
                 }
                 _uiState.update { currentState -> currentState.copy(isSequencePlayed = false) }
-
-                // Empty user sequence
-                _uiState.update { currentState ->
-                    Log.i(this::class.java.simpleName, "Emptying user's sequence")
-                    currentState.copy(
-                        game = currentState.game.copy(userSequence = "")
-                    )
-                }
 
                 // Wait for the user to input the guess
                 while (currentState.game.isCorrectGuess(false)
@@ -161,19 +180,6 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                     Log.i(this::class.java.toString(), "Game over")
                     stopGame()
                 }
-            }
-        }
-    }
-
-    /** Add current game to history if the user has inputted at least one color */
-    fun addGameToHistory() {
-        _uiState.update { currentState ->
-            if (!(currentState.game.sequence.length == 1 && currentState.game.userSequence.isEmpty())) {
-                Log.i(this::class.java.simpleName, "Adding current game to allGames")
-                currentState.copy(allGames = currentState.allGames.toMutableList().apply { add(currentState.game) })
-            } else {
-                Log.i(this::class.java.simpleName, "Not adding current game to allGames")
-                currentState
             }
         }
     }

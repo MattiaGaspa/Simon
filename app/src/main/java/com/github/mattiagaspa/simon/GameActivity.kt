@@ -37,14 +37,16 @@ fun GameScreen(modifier: Modifier = Modifier,
         Configuration.ORIENTATION_PORTRAIT -> {
             MainActivityPortrait(
                 modifier = modifier,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = onBack
             )
         }
 
         Configuration.ORIENTATION_LANDSCAPE -> {
             MainActivityLandscape(
                 modifier = modifier,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = onBack
             )
         }
     }
@@ -53,9 +55,12 @@ fun GameScreen(modifier: Modifier = Modifier,
 /** Composable function that builds the UI when the screen is in portrait mode
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun MainActivityPortrait(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
+fun MainActivityPortrait(modifier: Modifier = Modifier,
+                         viewModel: SimonViewModel,
+                         onBack: () -> Unit) {
     Column(
         modifier = modifier
     ) {
@@ -69,7 +74,8 @@ fun MainActivityPortrait(modifier: Modifier = Modifier, viewModel: SimonViewMode
         )
         Submit(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            viewModel = viewModel
+            viewModel = viewModel,
+            onBack = onBack
         )
     }
 }
@@ -77,9 +83,13 @@ fun MainActivityPortrait(modifier: Modifier = Modifier, viewModel: SimonViewMode
 /** Composable function that builds the UI when the screen is in landscape mode
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun MainActivityLandscape(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
+fun MainActivityLandscape(modifier: Modifier = Modifier,
+                          viewModel: SimonViewModel,
+                          onBack: () -> Unit
+) {
     // Split screen in half: one half for keypad and the other half for the sequence and the buttons
     Row(
         modifier = modifier
@@ -96,7 +106,8 @@ fun MainActivityLandscape(modifier: Modifier = Modifier, viewModel: SimonViewMod
                 viewModel = viewModel
             )
             Submit(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = onBack
             )
         }
     }

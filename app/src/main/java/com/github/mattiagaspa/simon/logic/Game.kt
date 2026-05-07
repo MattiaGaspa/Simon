@@ -1,22 +1,25 @@
 package com.github.mattiagaspa.simon.logic
 
 import android.util.Log
+import androidx.room.*
 
 /** Class used to represent a game
  * @param sequence The sequence that the user must replicate
  * @param userSequence The sequence inputted by the user
  */
+@Entity
 data class Game(
-    internal var sequence: String = "",
-    internal var userSequence: String = "",
+    @PrimaryKey(autoGenerate=true) internal val uid: Int = 0,
+    @ColumnInfo(name="sequence") internal var sequence: String = "",
+    @ColumnInfo(name="user_sequence") internal var userSequence: String = "",
 ) {
     /** Number of colors pressed */
     val length: Int
         get() = sequence.replace(", ", "").length
 
     /** Number of correct colors pressed by the user */
-    val correctLength: Int
-        get() = if (isCorrect()) length else (length - 1).coerceAtLeast(0)
+    // val correctLength: Int
+    //    get() = if (isCorrect()) length else (length - 1).coerceAtLeast(0)
 
     override fun toString(): String = sequence
 }
@@ -47,4 +50,22 @@ fun Game.isCorrectGuess(log: Boolean = true): Boolean {
         if (log) Log.i(this::class.java.toString(), "User is inserting the wrong color")
         return false
     }
+}
+
+@Dao
+interface GameDao {
+    @Query("SELECT * FROM Game")
+    fun getAll(): List<Game>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAll(vararg game: Game)
+
+    @Delete
+    fun delete(game: Game)
+}
+
+
+@Database(entities = [Game::class], version = 1)
+abstract class GameDatabase : RoomDatabase() {
+    abstract fun gameDao(): GameDao
 }

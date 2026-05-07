@@ -16,9 +16,13 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  * The user can end the game by pressing the `End game` button.
  * @param modifier The modifier to be applied to the `Submit`
  * @param viewModel The `SimonViewModel` to be used
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun Submit(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
+fun Submit(modifier: Modifier = Modifier,
+           viewModel: SimonViewModel,
+           onBack: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Row(
         modifier = modifier.padding(4.dp)
@@ -57,6 +61,7 @@ fun Submit(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
         Button(
             onClick = {
                 viewModel.stopGame()
+                onBack()
             },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
