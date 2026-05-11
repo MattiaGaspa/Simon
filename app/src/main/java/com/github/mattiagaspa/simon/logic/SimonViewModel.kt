@@ -4,17 +4,18 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import android.media.SoundPool
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.github.mattiagaspa.simon.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import com.github.mattiagaspa.simon.R
 
 /** ViewModel to update the application state
  * Documentation: [handling configuration changes](https://developer.android.com/guide/topics/resources/runtime-changes),
  *                [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
- *                [get sound duration](https://stackoverflow.com/questions/8042259/get-mp3-duration-in-android)
  */
 class SimonViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(SimonUIState())
@@ -74,20 +75,22 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     fun stopGame() {
         // Stop sequence generation
         gameJob?.cancel()
-        // Add game to history if user has inputted at least one color
-        _uiState.update { currentState ->
-            if (!(currentState.game.sequence.length == 1 && currentState.game.userSequence.isEmpty())) {
-                Log.i(this::class.java.simpleName, "Adding current game to allGames")
+        // Add game to history if user has inputted at least one color, play sound and show toast
+        if (!(currentState.game.sequence.length == 1 && currentState.game.userSequence.isEmpty())) {
+            Log.i(this::class.java.simpleName, "Adding current game to allGames")
+            _uiState.update { currentState ->
                 currentState.copy(allGames = currentState.allGames.toMutableList().apply { add(currentState.game) })
-            } else {
-                Log.i(this::class.java.simpleName, "Not adding current game to allGames")
-                currentState
             }
-        }
-        // Stop sounds and play Game Over if the sequence is not empty
-        soundPool.autoPause()
-        if (currentState.game.userSequence.isNotEmpty())
+            soundPool.autoPause()
+            Toast.makeText(
+                getApplication(),
+                R.string.you_lost,
+                Toast.LENGTH_SHORT
+            ).show()
             soundIds["Game Over"]?.let { soundPool.play(it, 1f, 1f, 0, 0, 1f) }
+        } else {
+            Log.i(this::class.java.simpleName, "Not adding current game to allGames")
+        }
         // Set up flags
         _uiState.update { currentState ->
             currentState.copy(
@@ -176,6 +179,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 // Check if the user input is correct
                 if (currentState.game.isCorrect()) {
                     Log.i(this::class.java.toString(), "User input is correct")
+                    currentState.game.maxCorrectLength++
                 } else {
                     Log.i(this::class.java.toString(), "Game over")
                     stopGame()

@@ -10,7 +10,9 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,11 +39,20 @@ fun SequenceList(modifier: Modifier = Modifier,
         ) {
             items(list.size) { index ->
                 Row(
-                    modifier = Modifier.padding(2.dp).fillParentMaxWidth()
+                    modifier = Modifier
+                        .padding(vertical = 2.dp)
+                        .clickable { gameDetails(index) }
+                        .fillParentMaxWidth()
                 ) {
                     Text(
-                        text = list[index].toString(),
-                        modifier = Modifier.clickable { gameDetails(index) },
+                        text = list[index].maxCorrectLength.toString(),
+                        modifier = Modifier.padding(horizontal = 2.dp),
+                        textAlign = TextAlign.Center,
+                        maxLines = 1
+                    )
+                    Text(
+                        text = list[index].sequence,
+                        modifier = Modifier.padding(horizontal = 2.dp).weight(1f),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )

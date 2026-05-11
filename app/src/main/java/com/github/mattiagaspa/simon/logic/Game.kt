@@ -12,16 +12,11 @@ data class Game(
     @PrimaryKey(autoGenerate=true) internal val uid: Int = 0,
     @ColumnInfo(name="sequence") internal var sequence: String = "",
     @ColumnInfo(name="user_sequence") internal var userSequence: String = "",
+    @ColumnInfo(name="max_correct_length") internal var maxCorrectLength: Int = 0,
 ) {
-    /** Number of colors pressed */
+    /** Sequence length */
     val length: Int
         get() = sequence.replace(", ", "").length
-
-    /** Number of correct colors pressed by the user */
-    // val correctLength: Int
-    //    get() = if (isCorrect()) length else (length - 1).coerceAtLeast(0)
-
-    override fun toString(): String = sequence
 }
 
 /** Function to check if the user made the correct guess
