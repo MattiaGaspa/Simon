@@ -11,12 +11,14 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param index The index of the match to be shown
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
 fun DetailsActivity(
     modifier: Modifier = Modifier,
     viewModel: SimonViewModel,
-    index: Int
+    index: Int,
+    onBack: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
 
@@ -26,7 +28,8 @@ fun DetailsActivity(
             DetailsActivityPortrait(
                 modifier = modifier,
                 viewModel = viewModel,
-                index = index
+                index = index,
+                onBack = onBack
             )
         }
 
@@ -34,7 +37,8 @@ fun DetailsActivity(
             DetailsActivityLandscape(
                 modifier = modifier,
                 viewModel = viewModel,
-                index = index
+                index = index,
+                onBack = onBack
             )
         }
     }
@@ -44,15 +48,19 @@ fun DetailsActivity(
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param index The index of the match to be shown
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
 fun DetailsActivityPortrait(modifier: Modifier = Modifier,
                             viewModel: SimonViewModel,
-                            index: Int) {
+                            index: Int,
+                            onBack: () -> Unit
+) {
     GameDetails(
         modifier,
         viewModel,
-        index
+        index,
+        onBack
     )
 }
 
@@ -60,14 +68,18 @@ fun DetailsActivityPortrait(modifier: Modifier = Modifier,
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param index The index of the match to be shown
+ * @param onBack Action to be performed to get back to home screen
  */
 @Composable
 fun DetailsActivityLandscape(modifier: Modifier = Modifier,
                              viewModel: SimonViewModel,
-                             index: Int) {
+                             index: Int,
+                             onBack: () -> Unit
+) {
     GameDetails(
         modifier,
         viewModel,
-        index
+        index,
+        onBack
     )
 }

@@ -28,9 +28,9 @@ class MainActivity : ComponentActivity() {
     /** Database for storing games */
     private val database by lazy {
         Room.databaseBuilder(
-            applicationContext,
-            GameDatabase::class.java, "game"
-        ).build()
+                applicationContext,
+                GameDatabase::class.java, "game"
+            ).build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +43,20 @@ class MainActivity : ComponentActivity() {
                     val gameDao = database.gameDao()
                     val history = withContext(Dispatchers.IO) { gameDao.getAll() }
                     viewModel.populateHistory(history)
+                }
+                viewModel.persistentSave = { game ->
+                    val gameDao = database.gameDao()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Log.i(this::class.java.simpleName, "Saving game to database")
+                        gameDao.insertAll(game)
+                    }
+                }
+                viewModel.gameDelete = { game ->
+                    val gameDao = database.gameDao()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Log.i(this::class.java.simpleName, "Deleting game from database")
+                        gameDao.delete(game)
+                    }
                 }
                 val navController = rememberNavController()
 
@@ -65,7 +79,10 @@ class MainActivity : ComponentActivity() {
                         composable("details/{index}") { backStackEntry ->
                             DetailsActivity(
                                 viewModel = viewModel,
-                                index = Uri.decode(backStackEntry.arguments?.getString("index")).toInt()
+                                index = Uri.decode(backStackEntry.arguments?.getString("index")).toInt(),
+                                onBack = {
+                                    navController.popBackStack()
+                                }
                             )
                         }
                         composable("game") {
@@ -85,12 +102,5 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.release()
-        val gameDao = database.gameDao()
-        lifecycleScope.launch(Dispatchers.IO) {
-            Log.i(this::class.java.simpleName, "Saving history to database")
-            viewModel.uiState.value.allGames.forEach { game ->
-                gameDao.insertAll(game)
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.mattiagaspa.simon
 
 import android.content.res.Configuration
+import android.os.PersistableBundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -11,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.components.Keypad
 import com.github.mattiagaspa.simon.components.SequenceVisualizer
 import com.github.mattiagaspa.simon.components.Submit
+import com.github.mattiagaspa.simon.logic.Game
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 
 /** Composable function that defines the behavior of the game screen
@@ -21,7 +23,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
 @Composable
 fun GameScreen(modifier: Modifier = Modifier,
                viewModel: SimonViewModel,
-               onBack: () -> Unit
+               onBack: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

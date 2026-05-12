@@ -29,6 +29,15 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     private var soundPool: SoundPool = SoundPool.Builder()
         .setMaxStreams(1)
         .build()
+    /** Persistent save method
+     * @param Game The game to be saved
+     */
+    internal lateinit var persistentSave: (Game) -> Unit
+    /** Remove game from persistent memory
+     * @param Game The game to be removed
+     */
+    internal lateinit var gameDelete: (Game) -> Unit
+
     /** All available sounds mapped to their soundId and durations */
     private val soundIds: Map<String, Int> = mutableMapOf<String, Int>().apply {
         val assetsManager = getApplication<Application>().assets
@@ -64,10 +73,23 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /** Remove game from history */
+    fun removeGame(game: Game) {
+        gameDelete(game)
+        _uiState.update { currentState ->
+            val newList = currentState.allGames.toMutableList()
+            newList.remove(game)
+            currentState.copy(allGames = newList)
+        }
+    }
+
     /** Start the game */
     fun startGame() {
         _uiState.update { currentState ->
-            currentState.copy(isGameStarted = true)
+            currentState.copy(
+                game = currentState.game.copy(start = System.currentTimeMillis()),
+                isGameStarted = true
+            )
         }
     }
 
@@ -75,12 +97,24 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     fun stopGame() {
         // Stop sequence generation
         gameJob?.cancel()
+
+        // Register stop time
+        _uiState.update { currentState ->
+            currentState.copy(
+                game = currentState.game.copy(stop = System.currentTimeMillis())
+            )
+        }
         // Add game to history if user has inputted at least one color, play sound and show toast
         if (!(currentState.game.sequence.length == 1 && currentState.game.userSequence.isEmpty())) {
             Log.i(this::class.java.simpleName, "Adding current game to allGames")
             _uiState.update { currentState ->
-                currentState.copy(allGames = currentState.allGames.toMutableList().apply { add(currentState.game) })
+                currentState.copy(
+                    allGames = currentState.allGames.toMutableList().apply { add(currentState.game) }
+                )
             }
+            // Save game history in database
+            persistentSave(currentState.game)
+
             soundPool.autoPause()
             Toast.makeText(
                 getApplication(),
@@ -91,6 +125,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
         } else {
             Log.i(this::class.java.simpleName, "Not adding current game to allGames")
         }
+
         // Set up flags
         _uiState.update { currentState ->
             currentState.copy(

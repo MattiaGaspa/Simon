@@ -6,6 +6,9 @@ import androidx.room.*
 /** Class used to represent a game
  * @param sequence The sequence that the user must replicate
  * @param userSequence The sequence inputted by the user
+ * @param maxCorrectLength Length of the longest sequence inputted by the user
+ * @param start Game start time
+ * @param stop Game stop time
  */
 @Entity
 data class Game(
@@ -13,11 +16,9 @@ data class Game(
     @ColumnInfo(name="sequence") internal var sequence: String = "",
     @ColumnInfo(name="user_sequence") internal var userSequence: String = "",
     @ColumnInfo(name="max_correct_length") internal var maxCorrectLength: Int = 0,
-) {
-    /** Sequence length */
-    val length: Int
-        get() = sequence.replace(", ", "").length
-}
+    @ColumnInfo(name="start") internal var start: Long = System.currentTimeMillis(),
+    @ColumnInfo(name="stop") internal var stop: Long = System.currentTimeMillis(),
+)
 
 /** Function to check if the user made the correct guess
  * @param log If true, logs the result

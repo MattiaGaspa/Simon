@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.R
+import com.github.mattiagaspa.simon.logic.Game
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 
 /** Composable function to display games button.
@@ -21,7 +22,7 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
 @Composable
 fun Submit(modifier: Modifier = Modifier,
            viewModel: SimonViewModel,
-           onBack: () -> Unit
+           onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Row(

@@ -7,4 +7,7 @@
     <string name="end_game">End game</string>
     <string name="sequence">Sequence</string>
     <string name="you_lost">You lost!</string>
+    <string name="started">Started</string>
+    <string name="ended">Ended</string>
+    <string name="delete">Delete game</string>
 </resources>
