@@ -10,4 +10,5 @@
     <string name="started">Iniziata</string>
     <string name="ended">Finita</string>
     <string name="delete">Cancella partita</string>
+    <string name="details">Dettagli Partita:</string>
 </resources>

@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.logic.SimonViewModel
-import com.github.mattiagaspa.simon.ui.theme.*
 
 /** Composable function that arranges buttons in a 3x2 grid.
  * The buttons light up when the user presses them and when the sequence is played.
@@ -28,9 +27,9 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
     val vibrator = LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colorDisposition = arrayOf(
-        arrayOf(Red, Green),
-        arrayOf(Blue, Cyan),
-        arrayOf(Magenta, Yellow)
+        arrayOf(Color.Red, Color.Green),
+        arrayOf(Color.Blue, Color.Cyan),
+        arrayOf(Color.Magenta, Color.Yellow)
     )
 
     Column(

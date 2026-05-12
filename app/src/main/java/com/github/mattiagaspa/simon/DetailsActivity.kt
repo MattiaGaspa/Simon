@@ -1,9 +1,17 @@
 package com.github.mattiagaspa.simon
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.room.util.TableInfo
 import com.github.mattiagaspa.simon.components.GameDetails
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 
@@ -56,12 +64,21 @@ fun DetailsActivityPortrait(modifier: Modifier = Modifier,
                             index: Int,
                             onBack: () -> Unit
 ) {
-    GameDetails(
-        modifier,
-        viewModel,
-        index,
-        onBack
-    )
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(R.string.details).uppercase(),
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+        )
+        GameDetails(
+            modifier,
+            viewModel,
+            index,
+            onBack
+        )
+    }
 }
 
 /** Composable function that builds the UI when the screen is in landscape mode
@@ -76,10 +93,19 @@ fun DetailsActivityLandscape(modifier: Modifier = Modifier,
                              index: Int,
                              onBack: () -> Unit
 ) {
-    GameDetails(
-        modifier,
-        viewModel,
-        index,
-        onBack
-    )
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(R.string.details).uppercase(),
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+        )
+        GameDetails(
+            modifier,
+            viewModel,
+            index,
+            onBack
+        )
+    }
 }

@@ -11,9 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.R
@@ -51,7 +55,15 @@ fun SequenceList(modifier: Modifier = Modifier,
                         maxLines = 1
                     )
                     Text(
-                        text = list[index].sequence,
+                        text = buildAnnotatedString {
+                            val common = list[index].userSequence.commonPrefixWith(list[index].sequence)
+                            withStyle(style = SpanStyle(color = Color.Green)) {
+                                append(common)
+                            }
+                            withStyle(style = SpanStyle(color = Color.Red)) {
+                                append(list[index].sequence.drop(common.length))
+                            }
+                        },
                         modifier = Modifier.padding(horizontal = 2.dp).weight(1f),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1

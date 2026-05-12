@@ -248,12 +248,12 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
  * @return The string representation of the color
  */
 private fun colorToString(color: Color): String = when(color) {
-    Red -> "R"
-    Green -> "G"
-    Blue -> "B"
-    Cyan -> "C"
-    Magenta -> "M"
-    Yellow -> "Y"
+    Color.Red -> "R"
+    Color.Green -> "G"
+    Color.Blue -> "B"
+    Color.Cyan -> "C"
+    Color.Magenta -> "M"
+    Color.Yellow -> "Y"
     else -> ""
 }
 /** Convert String to Color
@@ -261,11 +261,11 @@ private fun colorToString(color: Color): String = when(color) {
  * @return The color representation of the string
  */
 private fun stringToColor(color: String): Color = when(color) {
-    "R" -> Red
-    "G" -> Green
-    "B" -> Blue
-    "C" -> Cyan
-    "M" -> Magenta
-    "Y" -> Yellow
+    "R" -> Color.Red
+    "G" -> Color.Green
+    "B" -> Color.Blue
+    "C" -> Color.Cyan
+    "M" -> Color.Magenta
+    "Y" -> Color.Yellow
     else -> Color.Transparent
 }

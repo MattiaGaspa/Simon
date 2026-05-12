@@ -9,7 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.R
@@ -42,7 +46,16 @@ fun GameDetails(modifier: Modifier = Modifier,
             )
 
             Text(
-                text = uiState.allGames[index].toString(),
+                text = buildAnnotatedString {
+                    val common = uiState.allGames[index].userSequence.commonPrefixWith(uiState.allGames[index].sequence)
+                    withStyle(style = SpanStyle(color = Color.Green)) {
+                        append(common)
+                    }
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append(uiState.allGames[index].sequence.drop(common.length))
+                    }
+                },
+                modifier = Modifier.padding(2.dp),
             )
         }
         ExtendedFloatingActionButton(
