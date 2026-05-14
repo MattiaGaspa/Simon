@@ -98,9 +98,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.release()
-    }
 }

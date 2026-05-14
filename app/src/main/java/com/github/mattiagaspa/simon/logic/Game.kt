@@ -26,10 +26,10 @@ data class Game(
  */
 fun Game.isCorrect(log: Boolean = true): Boolean {
     if (sequence == userSequence) {
-        if (log) Log.i(this::class.java.toString(), "User made the correct guess")
+        if (log) Log.i(this::class.java.simpleName, "User made the correct guess")
         return true
     } else {
-        if (log) Log.i(this::class.java.toString(), "User made the wrong guess")
+        if (log) Log.i(this::class.java.simpleName, "User made the wrong guess")
         return false
     }
 }
@@ -40,10 +40,10 @@ fun Game.isCorrect(log: Boolean = true): Boolean {
  */
 fun Game.isCorrectGuess(log: Boolean = true): Boolean {
     if (sequence.startsWith(userSequence)) {
-        if (log) Log.i(this::class.java.toString(), "User is inserting the correct color")
+        if (log) Log.i(this::class.java.simpleName, "User is inserting the correct color")
         return true
     } else {
-        if (log) Log.i(this::class.java.toString(), "User is inserting the wrong color")
+        if (log) Log.i(this::class.java.simpleName, "User is inserting the wrong color")
         return false
     }
 }

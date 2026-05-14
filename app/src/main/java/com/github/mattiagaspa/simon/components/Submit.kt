@@ -8,7 +8,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.R
-import com.github.mattiagaspa.simon.logic.Game
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 
 /** Composable function to display games button.

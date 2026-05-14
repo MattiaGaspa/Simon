@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
-import com.github.mattiagaspa.simon.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,12 +37,20 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
      */
     internal lateinit var gameDelete: (Game) -> Unit
 
+    /** All available colors */
+    private val colorKeys = listOf("R", "G", "B", "C", "M", "Y")
+
     /** All available sounds mapped to their soundId and durations */
-    private val soundIds: Map<String, Int> = mutableMapOf<String, Int>().apply {
+    private val soundIds: Map<String, Int> by lazy {
         val assetsManager = getApplication<Application>().assets
-        listOf("R", "G", "B", "C", "M", "Y", "Game Over").forEach { elem ->
-            val afd = assetsManager.openFd("sounds/$elem.mp3")
-            put(elem, soundPool.load(afd, 1))
+        (colorKeys + "Game Over").associateWith { elem ->
+            try {
+                val afd = assetsManager.openFd("sounds/$elem.mp3")
+                soundPool.load(afd, 1)
+            } catch (e: Exception) {
+                Log.e(this::class.java.simpleName, "Error loading sound $elem", e)
+                -1
+            }
         }
     }
 
@@ -61,15 +68,15 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** Release necessary objects */
-    fun release() {
+    override fun onCleared() {
+        super.onCleared()
         soundPool.release()
     }
 
     /** Populate game history with games from database */
     fun populateHistory(allGames: List<Game>) {
         _uiState.update { currentState ->
-            currentState.copy(allGames = allGames as MutableList<Game>)
+            currentState.copy(allGames = allGames.toMutableList())
         }
     }
 
@@ -105,7 +112,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
         // Add game to history if user has inputted at least one color, play sound and show toast
-        if (!(currentState.game.sequence.length == 1 && currentState.game.userSequence.isEmpty())) {
+        if (!(currentState.game.sequence.length <= 1 && currentState.game.userSequence.isEmpty())) {
             Log.i(this::class.java.simpleName, "Adding current game to allGames")
             _uiState.update { currentState ->
                 currentState.copy(
@@ -176,7 +183,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                     if (currentSequence.isNotEmpty()) {
                         currentSequence += ", "
                     }
-                    val colorString = listOf("R", "G", "B", "C", "M", "Y").random()
+                    val colorString = colorKeys.random()
                     currentSequence += colorString
                     Log.i(this::class.java.simpleName, "Added color $colorString to sequence")
                     Log.v(this::class.java.simpleName, "Content of game.sequence:\n${currentSequence}")
@@ -213,10 +220,10 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Check if the user input is correct
                 if (currentState.game.isCorrect()) {
-                    Log.i(this::class.java.toString(), "User input is correct")
+                    Log.i(this::class.java.simpleName, "User input is correct")
                     currentState.game.maxCorrectLength++
                 } else {
-                    Log.i(this::class.java.toString(), "Game over")
+                    Log.i(this::class.java.simpleName, "Game over")
                     stopGame()
                 }
             }
