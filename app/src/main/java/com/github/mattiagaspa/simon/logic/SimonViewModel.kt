@@ -47,16 +47,14 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     private val colorKeys = listOf("R", "G", "B", "C", "M", "Y")
 
     /** All available sounds mapped to their soundId and durations */
-    private val soundIds: Map<String, Int> by lazy {
-        val assetsManager = getApplication<Application>().assets
-        (colorKeys + "Game Over").associateWith { elem ->
-            try {
-                val afd = assetsManager.openFd("sounds/$elem.mp3")
-                soundPool.load(afd, 1)
-            } catch (e: Exception) {
-                Timber.e(e, "Error loading sound $elem")
-                -1
-            }
+    private val soundIds: Map<String, Int> = (colorKeys + "Game Over").associateWith { elem ->
+        try {
+            val assetsManager = getApplication<Application>().assets
+            val afd = assetsManager.openFd("sounds/$elem.mp3")
+            soundPool.load(afd, 1)
+        } catch (e: Exception) {
+            Timber.e(e, "Error loading sound $elem")
+            -1
         }
     }
 
