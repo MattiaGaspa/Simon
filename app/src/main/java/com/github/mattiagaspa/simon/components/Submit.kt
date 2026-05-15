@@ -65,7 +65,6 @@ fun Submit(
 
         Button(
             onClick = {
-                viewModel.stopGame()
                 onBack()
             },
             modifier = Modifier

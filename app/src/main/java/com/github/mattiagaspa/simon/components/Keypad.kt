@@ -44,6 +44,15 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
             context.getSystemService<Vibrator>()
         }
     }
+    val vibrationEffect = remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+        else
+            null
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colorDisposition = arrayOf(
         arrayOf(Color.Red, Color.Green),
@@ -66,14 +75,15 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
                     Button(
                         onClick = {
                             // The button works only when the game is started and the sequence is not playing
-                            if (uiState.isGameStarted and !uiState.isSequencePlayed and !uiState.isGameOver) {
+                            if (uiState.isGameStarted && !uiState.isSequencePlayed && !uiState.isGameOver) {
                                 if (viewModel.addUserColor(color)) {
                                     viewModel.playSound(color)
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                        val vibrationEffect =
-                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
-                                        vibrator?.cancel()
+                                    vibrator?.cancel()
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                                         vibrator?.vibrate(vibrationEffect)
+                                    else {
+                                        @Suppress("DEPRECATION")
+                                        vibrator?.vibrate(50)
                                     }
                                 }
                             }

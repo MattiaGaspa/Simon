@@ -16,9 +16,7 @@ import com.github.mattiagaspa.simon.components.SequenceVisualizer
 import com.github.mattiagaspa.simon.components.Submit
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 
-/**
- * Composable function that defines the behavior of the game screen
- *
+/** Composable function that defines the behavior of the game screen
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param onBack Action to be performed to get back to home screen
@@ -32,7 +30,6 @@ fun GameScreen(
     val configuration = LocalConfiguration.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     BackHandler(enabled = uiState.isGameStarted && !uiState.isGameOver) {
-        viewModel.stopGame()
         onBack()
     }
 
@@ -51,9 +48,7 @@ fun GameScreen(
     }
 }
 
-/**
- * Composable function that builds the UI when the screen is in portrait mode
- *
+/** Composable function that builds the UI when the screen is in portrait mode
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param onBack Action to be performed to get back to home screen
@@ -85,9 +80,7 @@ fun MainActivityPortrait(
     }
 }
 
-/**
- * Composable function that builds the UI when the screen is in landscape mode
- *
+/** Composable function that builds the UI when the screen is in landscape mode
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param onBack Action to be performed to get back to home screen

@@ -2,18 +2,21 @@ package com.github.mattiagaspa.simon.logic
 
 import android.app.Application
 import android.media.SoundPool
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.github.mattiagaspa.simon.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /** ViewModel to update the application state
  * Documentation: [handling configuration changes](https://developer.android.com/guide/topics/resources/runtime-changes),
@@ -26,21 +29,19 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     /** Getter for current UI state */
     private val currentState get() = _uiState.value
 
+    /** Database instance */
+    private val database by lazy {
+        Room.databaseBuilder(application, GameDatabase::class.java, "game").build()
+    }
+
+    /** Data Access Object for database */
+    private val gameDao = database.gameDao()
+
     /** Job to manage the game loop coroutine */
     private var gameJob: kotlinx.coroutines.Job? = null
 
     /** SoundPool to manage the sound effects */
     private var soundPool: SoundPool = SoundPool.Builder().setMaxStreams(1).build()
-
-    /** Persistent save method
-     * @param Game The game to be saved
-     */
-    internal lateinit var persistentSave: (Game) -> Unit
-
-    /** Remove game from persistent memory
-     * @param Game The game to be removed
-     */
-    internal lateinit var gameDelete: (Game) -> Unit
 
     /** All available colors */
     private val colorKeys = listOf("R", "G", "B", "C", "M", "Y")
@@ -53,10 +54,24 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 val afd = assetsManager.openFd("sounds/$elem.mp3")
                 soundPool.load(afd, 1)
             } catch (e: Exception) {
-                Log.e(this::class.java.simpleName, "Error loading sound $elem", e)
+                Timber.e(e, "Error loading sound $elem")
                 -1
             }
         }
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val history = withContext(Dispatchers.IO) { gameDao.getAll() }
+            _uiState.update { currentState ->
+                currentState.copy(allGames = history.toMutableList())
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        soundPool.release()
     }
 
     /** Reset the game state */
@@ -73,22 +88,16 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        soundPool.release()
-    }
-
-    /** Populate game history with games from database */
-    fun populateHistory(allGames: List<Game>) {
-        _uiState.update { currentState ->
-            currentState.copy(allGames = allGames.toMutableList())
-        }
-    }
-
-    /** Remove game from history */
+    /** Remove game from history
+     * @param game The game to be removed
+     */
     fun removeGame(game: Game) {
-        gameDelete(game)
+        viewModelScope.launch(Dispatchers.IO) {
+            Timber.v("Removing $game from database")
+            gameDao.delete(game)
+        }
         _uiState.update { currentState ->
+            Timber.v("Removing $game from loaded games")
             val newList = currentState.allGames.toMutableList()
             newList.remove(game)
             currentState.copy(allGames = newList)
@@ -103,9 +112,10 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 isGameStarted = true
             )
         }
+        Timber.v("Started game: ${currentState.game}")
     }
 
-    /** Stop the game */
+    /** Stop the game and save the game if the users has inputted at least one color */
     fun stopGame() {
         // Stop sequence generation
         gameJob?.cancel()
@@ -116,25 +126,32 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 game = currentState.game.copy(stop = System.currentTimeMillis())
             )
         }
+
         // Add game to history if user has inputted at least one color, play sound and show toast
         if (!(currentState.game.sequence.length <= 1 && currentState.game.userSequence.isEmpty())) {
-            Log.i(this::class.java.simpleName, "Adding current game to allGames")
+            Timber.v(
+                "Adding ${currentState.game} to loaded games and persistent save"
+            )
             _uiState.update { currentState ->
                 currentState.copy(
                     allGames = currentState.allGames.toMutableList()
                         .apply { add(currentState.game) }
                 )
             }
-            // Save game history in database
-            persistentSave(currentState.game)
 
+            // Save game history in database
+            viewModelScope.launch(Dispatchers.IO) {
+                gameDao.insertAll(currentState.game)
+            }
+
+            // Play sound and show Toast
             soundPool.autoPause()
             Toast.makeText(
                 getApplication(), R.string.you_lost, Toast.LENGTH_SHORT
             ).show()
             soundIds["Game Over"]?.let { soundPool.play(it, 1f, 1f, 0, 0, 1f) }
         } else {
-            Log.i(this::class.java.simpleName, "Not adding current game to allGames")
+            Timber.v("Not adding ${currentState.game} to allGames")
         }
 
         // Set up flags
@@ -145,6 +162,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 buttonColorAnimation = Color.Transparent
             )
         }
+        Timber.v("Ended game: ${currentState.game}")
     }
 
     /** Toggle the pause/resume state */
@@ -152,7 +170,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { currentState ->
             currentState.copy(isGamePaused = !currentState.isGamePaused)
         }
-
+        Timber.v("Game is now ${if (currentState.isGamePaused) "paused" else "resumed"}")
     }
 
     /** Add a color to the user's sequence
@@ -166,18 +184,18 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
             }
             val colorString = colorToString(color)
             currentSequence += colorString
-            Log.i(this::class.java.simpleName, "Added color $colorString to user's sequence")
-            Log.v(this::class.java.simpleName, "Content of game.userSequence:\n${currentSequence}")
+            Timber.v("Added color $colorString to user's sequence")
             currentState.copy(
                 game = currentState.game.copy(userSequence = currentSequence)
             )
         }
+        Timber.v("Current game status: ${currentState.game}")
         return currentState.game.isCorrectGuess()
     }
 
     /** Coroutine that generates the sequence and plays it */
     fun generateSequence() {
-        gameJob?.cancel()
+        gameJob?.cancel() // Make sure no jobs are running
         gameJob = viewModelScope.launch {
             while (!currentState.isGameOver) {
                 delay(800)
@@ -189,22 +207,20 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                     }
                     val colorString = colorKeys.random()
                     currentSequence += colorString
-                    Log.i(this::class.java.simpleName, "Added color $colorString to sequence")
-                    Log.v(
-                        this::class.java.simpleName, "Content of game.sequence:\n${currentSequence}"
-                    )
+                    Timber.v("Added color $colorString to sequence")
                     currentState.copy(
                         game = currentState.game.copy(sequence = currentSequence)
                     )
                 }
+                Timber.v("Current game status: ${currentState.game}")
 
                 // Empty user sequence
                 _uiState.update { currentState ->
-                    Log.i(this::class.java.simpleName, "Emptying user's sequence")
                     currentState.copy(
                         game = currentState.game.copy(userSequence = "")
                     )
                 }
+
                 // Play animation and sound
                 _uiState.update { currentState -> currentState.copy(isSequencePlayed = true) }
                 currentState.game.sequence.split(", ").filter { it.isNotEmpty() }
@@ -220,18 +236,19 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update { currentState -> currentState.copy(isSequencePlayed = false) }
 
                 // Wait for the user to input the guess
-                while (currentState.game.isCorrectGuess(false) && !currentState.game.isCorrect(false)) {
+                while (currentState.game.isCorrectGuess() && !currentState.game.isCorrect()) {
                     delay(10)
                 }
 
                 // Check if the user input is correct
                 if (currentState.game.isCorrect()) {
-                    Log.i(this::class.java.simpleName, "User input is correct")
+                    Timber.v("User input is correct")
                     currentState.game.maxCorrectLength++
                 } else {
-                    Log.i(this::class.java.simpleName, "Game over")
+                    Timber.v("Game over")
                     stopGame()
                 }
+                Timber.v("Current game status: ${currentState.game}")
             }
         }
     }
@@ -250,6 +267,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
      * Documentation: [`SoundPool`](https://developer.android.com/reference/android/media/SoundPool),
      *                [heads up](https://stackoverflow.com/questions/69344299/soundpool-builder-explained-to-a-newbie)
      * @param color The color to be played
+     * @return The sound's id
      */
     fun playSound(color: Color): Int {
         val soundId = soundIds[colorToString(color)] ?: return -1
