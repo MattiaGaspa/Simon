@@ -1,16 +1,19 @@
 package com.github.mattiagaspa.simon.logic
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import android.media.SoundPool
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import com.github.mattiagaspa.simon.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /** ViewModel to update the application state
  * Documentation: [handling configuration changes](https://developer.android.com/guide/topics/resources/runtime-changes),
@@ -19,19 +22,21 @@ import com.github.mattiagaspa.simon.R
 class SimonViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(SimonUIState())
     val uiState: StateFlow<SimonUIState> = _uiState.asStateFlow()
+
     /** Getter for current UI state */
     private val currentState get() = _uiState.value
 
     /** Job to manage the game loop coroutine */
     private var gameJob: kotlinx.coroutines.Job? = null
+
     /** SoundPool to manage the sound effects */
-    private var soundPool: SoundPool = SoundPool.Builder()
-        .setMaxStreams(1)
-        .build()
+    private var soundPool: SoundPool = SoundPool.Builder().setMaxStreams(1).build()
+
     /** Persistent save method
      * @param Game The game to be saved
      */
     internal lateinit var persistentSave: (Game) -> Unit
+
     /** Remove game from persistent memory
      * @param Game The game to be removed
      */
@@ -116,7 +121,8 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
             Log.i(this::class.java.simpleName, "Adding current game to allGames")
             _uiState.update { currentState ->
                 currentState.copy(
-                    allGames = currentState.allGames.toMutableList().apply { add(currentState.game) }
+                    allGames = currentState.allGames.toMutableList()
+                        .apply { add(currentState.game) }
                 )
             }
             // Save game history in database
@@ -124,9 +130,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
 
             soundPool.autoPause()
             Toast.makeText(
-                getApplication(),
-                R.string.you_lost,
-                Toast.LENGTH_SHORT
+                getApplication(), R.string.you_lost, Toast.LENGTH_SHORT
             ).show()
             soundIds["Game Over"]?.let { soundPool.play(it, 1f, 1f, 0, 0, 1f) }
         } else {
@@ -186,7 +190,9 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                     val colorString = colorKeys.random()
                     currentSequence += colorString
                     Log.i(this::class.java.simpleName, "Added color $colorString to sequence")
-                    Log.v(this::class.java.simpleName, "Content of game.sequence:\n${currentSequence}")
+                    Log.v(
+                        this::class.java.simpleName, "Content of game.sequence:\n${currentSequence}"
+                    )
                     currentState.copy(
                         game = currentState.game.copy(sequence = currentSequence)
                     )
@@ -201,20 +207,20 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 // Play animation and sound
                 _uiState.update { currentState -> currentState.copy(isSequencePlayed = true) }
-                currentState.game.sequence.split(", ").filter { it.isNotEmpty() }.forEach { colorString ->
-                    val soundId = playSound(stringToColor(colorString))
-                    flashButton(stringToColor(colorString))
-                    while (currentState.isGamePaused) {
-                        soundPool.pause(soundId)
-                        delay(50)
+                currentState.game.sequence.split(", ").filter { it.isNotEmpty() }
+                    .forEach { colorString ->
+                        val soundId = playSound(stringToColor(colorString))
+                        flashButton(stringToColor(colorString))
+                        while (currentState.isGamePaused) {
+                            soundPool.pause(soundId)
+                            delay(50)
+                        }
+                        soundPool.resume(soundId)
                     }
-                    soundPool.resume(soundId)
-                }
                 _uiState.update { currentState -> currentState.copy(isSequencePlayed = false) }
 
                 // Wait for the user to input the guess
-                while (currentState.game.isCorrectGuess(false)
-                    && !currentState.game.isCorrect(false)) {
+                while (currentState.game.isCorrectGuess(false) && !currentState.game.isCorrect(false)) {
                     delay(10)
                 }
 
@@ -241,7 +247,8 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /** Play the sound with the given color.
-     * Documentation: [`SoundPool`](https://developer.android.com/reference/android/media/SoundPool), [heads up](https://stackoverflow.com/questions/69344299/soundpool-builder-explained-to-a-newbie)
+     * Documentation: [`SoundPool`](https://developer.android.com/reference/android/media/SoundPool),
+     *                [heads up](https://stackoverflow.com/questions/69344299/soundpool-builder-explained-to-a-newbie)
      * @param color The color to be played
      */
     fun playSound(color: Color): Int {
@@ -254,7 +261,7 @@ class SimonViewModel(application: Application) : AndroidViewModel(application) {
  * @param color The color to be converted
  * @return The string representation of the color
  */
-private fun colorToString(color: Color): String = when(color) {
+private fun colorToString(color: Color): String = when (color) {
     Color.Red -> "R"
     Color.Green -> "G"
     Color.Blue -> "B"
@@ -263,11 +270,12 @@ private fun colorToString(color: Color): String = when(color) {
     Color.Yellow -> "Y"
     else -> ""
 }
+
 /** Convert String to Color
  * @param color The string to be converted
  * @return The color representation of the string
  */
-private fun stringToColor(color: String): Color = when(color) {
+private fun stringToColor(color: String): Color = when (color) {
     "R" -> Color.Red
     "G" -> Color.Green
     "B" -> Color.Blue

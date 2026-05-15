@@ -1,7 +1,16 @@
 package com.github.mattiagaspa.simon.logic
 
 import android.util.Log
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.RoomDatabase
 
 /** Class used to represent a game
  * @param sequence The sequence that the user must replicate
@@ -12,12 +21,12 @@ import androidx.room.*
  */
 @Entity
 data class Game(
-    @PrimaryKey(autoGenerate=true) internal val uid: Int = 0,
-    @ColumnInfo(name="sequence") internal var sequence: String = "",
-    @ColumnInfo(name="user_sequence") internal var userSequence: String = "",
-    @ColumnInfo(name="max_correct_length") internal var maxCorrectLength: Int = 0,
-    @ColumnInfo(name="start") internal var start: Long = System.currentTimeMillis(),
-    @ColumnInfo(name="stop") internal var stop: Long = System.currentTimeMillis(),
+    @PrimaryKey(autoGenerate = true) internal val uid: Int = 0,
+    @ColumnInfo(name = "sequence") internal var sequence: String = "",
+    @ColumnInfo(name = "user_sequence") internal var userSequence: String = "",
+    @ColumnInfo(name = "max_correct_length") internal var maxCorrectLength: Int = 0,
+    @ColumnInfo(name = "start") internal var start: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "stop") internal var stop: Long = System.currentTimeMillis(),
 )
 
 /** Function to check if the user made the correct guess
@@ -59,7 +68,6 @@ interface GameDao {
     @Delete
     fun delete(game: Game)
 }
-
 
 @Database(entities = [Game::class], version = 1)
 abstract class GameDatabase : RoomDatabase() {

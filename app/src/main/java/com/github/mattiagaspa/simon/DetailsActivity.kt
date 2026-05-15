@@ -29,8 +29,7 @@ fun DetailsActivity(
 ) {
     val configuration = LocalConfiguration.current
 
-    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
-    when(configuration.orientation) {
+    when (configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
             DetailsActivityPortrait(
                 modifier = modifier,
@@ -48,6 +47,15 @@ fun DetailsActivity(
                 onBack = onBack
             )
         }
+
+        else -> {
+            DetailsActivityPortrait(
+                modifier = modifier,
+                viewModel = viewModel,
+                index = index,
+                onBack = onBack
+            )
+        }
     }
 }
 
@@ -58,10 +66,11 @@ fun DetailsActivity(
  * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun DetailsActivityPortrait(modifier: Modifier = Modifier,
-                            viewModel: SimonViewModel,
-                            index: Int,
-                            onBack: () -> Unit
+fun DetailsActivityPortrait(
+    modifier: Modifier = Modifier,
+    viewModel: SimonViewModel,
+    index: Int,
+    onBack: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -69,7 +78,9 @@ fun DetailsActivityPortrait(modifier: Modifier = Modifier,
         Text(
             text = stringResource(R.string.details).uppercase(),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+            modifier = modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally)
         )
         GameDetails(
             modifier,
@@ -87,10 +98,11 @@ fun DetailsActivityPortrait(modifier: Modifier = Modifier,
  * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun DetailsActivityLandscape(modifier: Modifier = Modifier,
-                             viewModel: SimonViewModel,
-                             index: Int,
-                             onBack: () -> Unit
+fun DetailsActivityLandscape(
+    modifier: Modifier = Modifier,
+    viewModel: SimonViewModel,
+    index: Int,
+    onBack: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -98,7 +110,9 @@ fun DetailsActivityLandscape(modifier: Modifier = Modifier,
         Text(
             text = stringResource(R.string.details).uppercase(),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+            modifier = modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally)
         )
         GameDetails(
             modifier,

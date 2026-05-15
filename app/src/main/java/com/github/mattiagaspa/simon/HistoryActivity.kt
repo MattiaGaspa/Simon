@@ -1,11 +1,13 @@
 package com.github.mattiagaspa.simon
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,8 +29,7 @@ fun HistoryScreen(
 ) {
     val configuration = LocalConfiguration.current
 
-    // Configuration.ORIENTATION_SQUARE and Configuration.ORIENTATION_UNDEFINED aren't necessary for a phone application
-    when(configuration.orientation) {
+    when (configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
             HistoryActivityPortrait(
                 modifier = modifier,
@@ -46,6 +47,15 @@ fun HistoryScreen(
                 startGame = startGame
             )
         }
+
+        else -> {
+            HistoryActivityPortrait(
+                modifier = modifier,
+                viewModel = viewModel,
+                gameDetails = gameDetails,
+                startGame = startGame
+            )
+        }
     }
 }
 
@@ -56,21 +66,22 @@ fun HistoryScreen(
  * @param startGame Callback function to be called when the user wants to start a new game
  */
 @Composable
-fun HistoryActivityPortrait(modifier: Modifier = Modifier,
-                            viewModel: SimonViewModel,
-                            gameDetails: (Int) -> Unit,
-                            startGame: () -> Unit) {
+fun HistoryActivityPortrait(
+    modifier: Modifier = Modifier,
+    viewModel: SimonViewModel,
+    gameDetails: (Int) -> Unit,
+    startGame: () -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.app_name).uppercase(),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally)
         )
         SequenceList(
-            Modifier.weight(1f),
-            viewModel,
-            gameDetails,
-            startGame
+            Modifier.weight(1f), viewModel, gameDetails, startGame
         )
     }
 }
@@ -82,21 +93,22 @@ fun HistoryActivityPortrait(modifier: Modifier = Modifier,
  * @param startGame Callback function to be called when the user wants to start a new game
  */
 @Composable
-fun HistoryActivityLandscape(modifier: Modifier = Modifier,
-                             viewModel: SimonViewModel,
-                             gameDetails: (Int) -> Unit,
-                             startGame: () -> Unit) {
+fun HistoryActivityLandscape(
+    modifier: Modifier = Modifier,
+    viewModel: SimonViewModel,
+    gameDetails: (Int) -> Unit,
+    startGame: () -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.app_name).uppercase(),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally)
         )
         SequenceList(
-            Modifier.weight(1f),
-            viewModel,
-            gameDetails,
-            startGame
+            Modifier.weight(1f), viewModel, gameDetails, startGame
         )
     }
 }

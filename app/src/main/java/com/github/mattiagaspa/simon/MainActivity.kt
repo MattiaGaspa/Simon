@@ -6,13 +6,16 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.github.mattiagaspa.simon.logic.GameDatabase
 import com.github.mattiagaspa.simon.logic.SimonViewModel
@@ -25,12 +28,13 @@ import kotlinx.coroutines.withContext
 class MainActivity : ComponentActivity() {
     /** ViewModel to update the application state */
     private lateinit var viewModel: SimonViewModel
+
     /** Database for storing games */
     private val database by lazy {
         Room.databaseBuilder(
-                applicationContext,
-                GameDatabase::class.java, "game"
-            ).build()
+            applicationContext,
+            GameDatabase::class.java, "game"
+        ).build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +73,15 @@ class MainActivity : ComponentActivity() {
                         composable("history") {
                             HistoryScreen(
                                 viewModel = viewModel,
-                                gameDetails = { index -> navController.navigate("details/${Uri.encode(index.toString())}") },
+                                gameDetails = { index ->
+                                    navController.navigate(
+                                        "details/${
+                                            Uri.encode(
+                                                index.toString()
+                                            )
+                                        }"
+                                    )
+                                },
                                 startGame = {
                                     viewModel.reset()
                                     navController.navigate("game")
@@ -79,7 +91,8 @@ class MainActivity : ComponentActivity() {
                         composable("details/{index}") { backStackEntry ->
                             DetailsActivity(
                                 viewModel = viewModel,
-                                index = Uri.decode(backStackEntry.arguments?.getString("index")).toInt(),
+                                index = Uri.decode(backStackEntry.arguments?.getString("index"))
+                                    .toInt(),
                                 onBack = {
                                     navController.popBackStack()
                                 }

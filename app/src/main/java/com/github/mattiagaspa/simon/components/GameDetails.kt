@@ -1,12 +1,16 @@
 package com.github.mattiagaspa.simon.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,25 +24,27 @@ import com.github.mattiagaspa.simon.R
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 import java.text.DateFormat
 
-/** Fragment that shows the detail of the match
+/**
+ * Fragment that shows the detail of the match
+ *
  * @param modifier The modifier to be applied
  * @param viewModel The `SimonViewModel` to be used
  * @param index The index of the match to be shown
  * @param onBack Action to be performed to get back to home screen
  */
 @Composable
-fun GameDetails(modifier: Modifier = Modifier,
-                viewModel: SimonViewModel,
-                index: Int,
-                onBack: () -> Unit
+fun GameDetails(
+    modifier: Modifier = Modifier,
+    viewModel: SimonViewModel,
+    index: Int,
+    onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Box(modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = modifier.padding(2.dp)
-        ) {
+        Column(modifier = modifier.padding(2.dp)) {
             Text(
-                text = stringResource(R.string.started) + ": " + longToDate(uiState.allGames[index].start),
+                text =
+                    stringResource(R.string.started) + ": " + longToDate(uiState.allGames[index].start),
             )
 
             Text(
@@ -46,15 +52,17 @@ fun GameDetails(modifier: Modifier = Modifier,
             )
 
             Text(
-                text = buildAnnotatedString {
-                    val common = uiState.allGames[index].userSequence.commonPrefixWith(uiState.allGames[index].sequence)
-                    withStyle(style = SpanStyle(color = Color.Green)) {
-                        append(common)
-                    }
-                    withStyle(style = SpanStyle(color = Color.Red)) {
-                        append(uiState.allGames[index].sequence.drop(common.length))
-                    }
-                },
+                text =
+                    buildAnnotatedString {
+                        val common =
+                            uiState.allGames[index]
+                                .userSequence
+                                .commonPrefixWith(uiState.allGames[index].sequence)
+                        withStyle(style = SpanStyle(color = Color.Green)) { append(common) }
+                        withStyle(style = SpanStyle(color = Color.Red)) {
+                            append(uiState.allGames[index].sequence.drop(common.length))
+                        }
+                    },
                 modifier = Modifier.padding(2.dp),
             )
         }
@@ -67,21 +75,24 @@ fun GameDetails(modifier: Modifier = Modifier,
             text = { Text(text = stringResource(R.string.delete)) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }
 
-/** Convert from long to date string
+/**
+ * Convert from long to date string
+ *
  * @param time Time from 1/1/1970
  * @return Formatted date
  */
 fun longToDate(time: Long): String {
     val date = java.util.Date(time)
-    val formatter = DateFormat.getDateTimeInstance(
-        DateFormat.MEDIUM,
-        DateFormat.MEDIUM,
-        java.util.Locale.getDefault()
-    )
+    val formatter =
+        DateFormat.getDateTimeInstance(
+            DateFormat.MEDIUM,
+            DateFormat.MEDIUM,
+            java.util.Locale.getDefault(),
+        )
     return formatter.format(date)
 }

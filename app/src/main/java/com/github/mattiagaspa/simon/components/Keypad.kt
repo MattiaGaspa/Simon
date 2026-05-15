@@ -1,17 +1,27 @@
 package com.github.mattiagaspa.simon.components
 
-import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import androidx.compose.foundation.interaction.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import android.os.VibratorManager
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.getSystemService
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.mattiagaspa.simon.logic.SimonViewModel
 
@@ -24,7 +34,16 @@ import com.github.mattiagaspa.simon.logic.SimonViewModel
  */
 @Composable
 fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
-    val vibrator = LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    val context = LocalContext.current
+    val vibrator = remember(context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = context.getSystemService<VibratorManager>()
+            vibratorManager?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            context.getSystemService<Vibrator>()
+        }
+    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colorDisposition = arrayOf(
         arrayOf(Color.Red, Color.Green),
@@ -51,9 +70,10 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
                                 if (viewModel.addUserColor(color)) {
                                     viewModel.playSound(color)
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                        val vibrationEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
-                                        vibrator.cancel()
-                                        vibrator.vibrate(vibrationEffect)
+                                        val vibrationEffect =
+                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+                                        vibrator?.cancel()
+                                        vibrator?.vibrate(vibrationEffect)
                                     }
                                 }
                             }
@@ -72,7 +92,7 @@ fun Keypad(modifier: Modifier = Modifier, viewModel: SimonViewModel) {
 
                         ),
                         interactionSource = interactionSource
-                    ) {  }
+                    ) { }
                 }
             }
         }
